@@ -2,7 +2,8 @@
 
 [![Python](https://img.shields.io/badge/Python-3.10%2B-blue.svg)](https://www.python.org/)
 [![Verification Suite](https://img.shields.io/badge/Challenges-5%2F5%20Passed-0a8a3c.svg)](file:///c:/PROJECTS/OSH020/test_all_challenges.py)
-[![Vercel Deployment](https://img.shields.io/badge/Vercel-Zero--Config%20Ready-black.svg)](https://vercel.com/)
+[![Vercel Deployment](https://img.shields.io/badge/Vercel-Live%20Production-000000.svg)](https://osh020-page-replacement.vercel.app)
+[![Live App](https://img.shields.io/badge/Live%20App-osh020--page--replacement.vercel.app-8fa372.svg)](https://osh020-page-replacement.vercel.app)
 [![License](https://img.shields.io/badge/License-MIT-black.svg)](LICENSE)
 [![Theme](https://img.shields.io/badge/Design-Swiss%20Brutalist%20Editorial-8fa372.svg)](#interactive-web-dashboard)
 
@@ -174,24 +175,18 @@ Visit `http://localhost:3000` in your browser.
 
 ---
 
-## Vercel Deployment Guide
+## Vercel Deployment
 
-The repository includes pre-configured [`vercel.json`](file:///c:/PROJECTS/OSH020/vercel.json) and [`package.json`](file:///c:/PROJECTS/OSH020/package.json) for zero-config static hosting:
+The application is deployed live in production on Vercel:
 
-### Option A: 1-Click Import via Vercel Dashboard (Recommended)
-1. Navigate to [vercel.com/new](https://vercel.com/new).
-2. Connect your GitHub account and import `arnwdeep/OSH020`.
-3. Leave all build settings as default (root directory `.`).
-4. Click **Deploy**. Your simulator will be live globally on a `.vercel.app` domain in seconds!
+- **Live Production URL**: [https://osh020-page-replacement.vercel.app](https://osh020-page-replacement.vercel.app)
+- **Deployment Status**: Active, Global Edge CDN Cached, Zero-Config Static Serving
+- **Configuration**: [`vercel.json`](file:///c:/PROJECTS/OSH020/vercel.json) & [`package.json`](file:///c:/PROJECTS/OSH020/package.json)
 
-### Option B: Deploy via Vercel CLI
-```bash
-# Install Vercel CLI
-npm i -g vercel
-
-# Authenticate & Deploy
-vercel
-```
+### Continuous Deployment via GitHub:
+Every push to the `main` branch on [arnwdeep/OSH020](https://github.com/arnwdeep/OSH020) can trigger automated deployments on Vercel.
+To deploy a new clone or fork with 1 click:
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Farnwdeep%2FOSH020)
 
 ---
 

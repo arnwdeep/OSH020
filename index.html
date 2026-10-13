@@ -1220,6 +1220,7 @@
     let width = 0, height = 0;
     let mouseX = -1000, mouseY = -1000;
     let curX = -1000, curY = -1000;
+    let vx = 0, vy = 0;
     let targetRadius = 0;
     let currentRadius = 0;
 
@@ -1244,8 +1245,10 @@
       const rect = heroScreen.getBoundingClientRect();
       mouseX = e.clientX - rect.left;
       mouseY = e.clientY - rect.top;
-      curX = mouseX;
-      curY = mouseY;
+      if (curX < -500) {
+        curX = mouseX;
+        curY = mouseY;
+      }
       targetRadius = getRevealRadius();
     });
 
@@ -1266,8 +1269,10 @@
       const rect = heroScreen.getBoundingClientRect();
       mouseX = touch.clientX - rect.left;
       mouseY = touch.clientY - rect.top;
-      curX = mouseX;
-      curY = mouseY;
+      if (curX < -500) {
+        curX = mouseX;
+        curY = mouseY;
+      }
       targetRadius = getRevealRadius();
     }, { passive: true });
 
@@ -1294,15 +1299,21 @@
       ctx.drawImage(img, dx, dy, dw, dh);
     }
 
-    // Animation Loop
-    function render() {
+    // Animation Loop with Trailing Delay & Floating Effect
+    function render(now) {
       requestAnimationFrame(render);
       if (!width || !height) return;
 
-      // Smooth lerp coordinates and reveal radius for soft trailing inertia
-      curX += (mouseX - curX) * 0.18;
-      curY += (mouseY - curY) * 0.18;
-      currentRadius += (targetRadius - currentRadius) * 0.14;
+      // Delayed fluid trailing physics from cursor
+      const dx = mouseX - curX;
+      const dy = mouseY - curY;
+      vx = (vx + dx * 0.038) * 0.82;
+      vy = (vy + dy * 0.038) * 0.82;
+      curX += vx;
+      curY += vy;
+
+      // Smooth floating radius expansion
+      currentRadius += (targetRadius - currentRadius) * 0.065;
 
       // 1. Draw static portrait image
       ctx.globalCompositeOperation = 'source-over';
@@ -1315,22 +1326,31 @@
         ctx.fillRect(0, 0, width, height);
       }
 
-      // 2. If hovering, reveal area with soft feathered fades on all sides
+      // 2. If hovering, reveal area with trailing delay, floating effect, and faded edges
       if (currentRadius > 1) {
         ctx.save();
         ctx.globalCompositeOperation = 'destination-out';
 
-        const r = currentRadius;
+        const t = (now || performance.now()) * 0.0016;
+        // Ambient organic floating drift (floating levitation oscillation)
+        const floatOffsetX = Math.sin(t * 1.5) * 12 + Math.cos(t * 0.8) * 6;
+        const floatOffsetY = Math.cos(t * 1.2) * 14 + Math.sin(t * 1.9) * 5;
+        const drawX = curX + floatOffsetX;
+        const drawY = curY + floatOffsetY;
+
+        // Subtle breathing floating pulse on radius
+        const r = currentRadius * (1 + Math.sin(t * 1.5) * 0.045);
+
         // Radial gradient: 100% video in center, feathered fade on sides
-        const grad = ctx.createRadialGradient(curX, curY, r * 0.25, curX, curY, r);
+        const grad = ctx.createRadialGradient(drawX, drawY, r * 0.22, drawX, drawY, r);
         grad.addColorStop(0, 'rgba(0, 0, 0, 1)');       // Center: fully clear -> video visible
-        grad.addColorStop(0.55, 'rgba(0, 0, 0, 0.95)'); // Core view
-        grad.addColorStop(0.8, 'rgba(0, 0, 0, 0.5)');   // Smooth fade
+        grad.addColorStop(0.52, 'rgba(0, 0, 0, 0.95)'); // Core view
+        grad.addColorStop(0.78, 'rgba(0, 0, 0, 0.45)'); // Smooth fade
         grad.addColorStop(1, 'rgba(0, 0, 0, 0)');       // Outer edge: completely faded into image
 
         ctx.fillStyle = grad;
         ctx.beginPath();
-        ctx.arc(curX, curY, r, 0, Math.PI * 2);
+        ctx.arc(drawX, drawY, r, 0, Math.PI * 2);
         ctx.fill();
 
         ctx.restore();

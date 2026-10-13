@@ -1,17 +1,19 @@
 # OSH020 — Workload-Adaptive Page Replacement Engine & Simulator
 
-[![Python](https://img.shields.io/badge/Python-3.10%2B-blue.svg)](https://www.python.org/)
-[![Verification Suite](https://img.shields.io/badge/Challenges-5%2F5%20Passed-0a8a3c.svg)](file:///c:/PROJECTS/OSH020/test_all_challenges.py)
-[![Vercel Deployment](https://img.shields.io/badge/Vercel-Live%20Production-000000.svg)](https://osh020-page-replacement.vercel.app)
-[![Live App](https://img.shields.io/badge/Live%20App-osh020--page--replacement.vercel.app-8fa372.svg)](https://osh020-page-replacement.vercel.app)
-[![License](https://img.shields.io/badge/License-MIT-black.svg)](LICENSE)
-[![Theme](https://img.shields.io/badge/Design-Swiss%20Brutalist%20Editorial-8fa372.svg)](#interactive-web-dashboard)
+> 🌐 **Live Web Application**: [https://osh020-page-replacement.vercel.app](https://osh020-page-replacement.vercel.app)
+
+[![Live Vercel App](https://img.shields.io/badge/Vercel-Live%20App-000000?style=for-the-badge&logo=vercel)](https://osh020-page-replacement.vercel.app)
+[![GitHub Repo](https://img.shields.io/badge/GitHub-Repository-181717?style=for-the-badge&logo=github)](https://github.com/arnwdeep/OSH020)
+[![Python](https://img.shields.io/badge/Python-3.10%2B-3776AB?style=for-the-badge&logo=python&logoColor=white)](https://www.python.org/)
+[![Verification Suite](https://img.shields.io/badge/Challenges-5%2F5%20Passed-0a8a3c?style=for-the-badge)](test_all_challenges.py)
+[![Design](https://img.shields.io/badge/Design-Swiss%20Editorial-8fa372?style=for-the-badge)](#interactive-web-dashboard)
 
 **OSH020** is an operating system virtual memory simulator and runtime reconfigurable memory management engine. It benchmarks classic page replacement policies (LRU, FIFO, Clock, LFU, ARC) against Bélády's theoretical Optimal (MIN) algorithm, and introduces a **Workload-Adaptive Decision Engine** that dynamically characterizes memory reference streams and hot-swaps eviction policies at runtime to maximize cache hit rates and minimize disk I/O costs.
 
 ---
 
 ## Table of Contents
+- [Live Vercel Application](#live-vercel-application)
 - [Executive Overview](#executive-overview)
 - [System Architecture](#system-architecture)
 - [Implemented Replacement Policies](#implemented-replacement-policies)
@@ -20,7 +22,6 @@
 - [Interactive Web Dashboard](#interactive-web-dashboard)
 - [Technical Verification Suite (KO-05-C1 to C5)](#technical-verification-suite)
 - [Getting Started & Local Execution](#getting-started--local-execution)
-- [Vercel Deployment Guide](#vercel-deployment-guide)
 
 ---
 
@@ -217,10 +218,3 @@ OSH020/
 │       └── optimal.py          # Bélády's theoretical offline MIN algorithm
 └── README.md                   # Complete architectural documentation
 ```
-
----
-
-## License
-
-This project is open-source under the [MIT License](LICENSE).  
-Created for **OSH020** Virtual Memory & Page Replacement Research.

@@ -1,0 +1,1488 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>OSH020 — Workload-Adaptive Page Replacement</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Anton&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --bg-hero: #a1b384;
+      --bg-sim: #a1b384;
+      --card-sim: #ffffff;
+      --card-muted: #f7f7f7;
+      --border-dark: #000000;
+      --border-light: #e5e5e5;
+      --border-subtle: #eeeeee;
+      --text-main: #000000;
+      --text-muted: #666666;
+      --text-faint: #999999;
+      --pill-bg: #000000;
+      --pill-text: #ffffff;
+      --green: #0a8a3c;
+      --green-bg: #eaf7ee;
+      --red: #d11f1f;
+      --red-bg: #fae8e8;
+      --amber: #b07000;
+    }
+
+    html {
+      font-size: 14px;
+      scroll-behavior: smooth;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    body {
+      font-family: 'Space Grotesk', -apple-system, BlinkMacSystemFont, "Helvetica Neue", Helvetica, Arial, sans-serif;
+      background: var(--bg-sim);
+      color: var(--text-main);
+      line-height: 1.45;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* ==========================================================================
+       HERO FULLSCREEN: PORTRAIT IMAGE + BG VIDEO LOOP + FADED AREA REVEAL
+       ========================================================================== */
+    .hero-screen {
+      position: relative;
+      width: 100vw;
+      height: 100vh;
+      min-height: 640px;
+      overflow: hidden;
+      background: var(--bg-hero);
+    }
+
+    .hero-video {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center;
+      z-index: 1;
+      display: block;
+    }
+
+    .hero-canvas {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 2;
+      cursor: crosshair;
+      display: block;
+    }
+
+    /* Minimal Editorial Overlay on Hero */
+    .hero-overlay {
+      position: absolute;
+      inset: 0;
+      z-index: 5;
+      pointer-events: none;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 2.25rem 2.75rem;
+    }
+
+    .hero-nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      width: 100%;
+    }
+
+    .hero-pill-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: rgba(255, 255, 255, 0.92);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      color: #000000;
+      padding: 0.45rem 1.15rem;
+      border-radius: 9999px;
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      border: 1px solid rgba(0, 0, 0, 0.15);
+      pointer-events: auto;
+    }
+
+    .pulse-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: #0a8a3c;
+      box-shadow: 0 0 0 3px rgba(10, 138, 60, 0.25);
+    }
+
+    .hero-pill-link {
+      background: #000000;
+      color: #ffffff;
+      text-decoration: none;
+      padding: 0.5rem 1.35rem;
+      border-radius: 9999px;
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      transition: all 0.2s ease;
+      pointer-events: auto;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      border: 1px solid #000000;
+    }
+    .hero-pill-link:hover {
+      background: #222222;
+      transform: translateY(-1px);
+    }
+
+    .hero-content {
+      display: flex;
+      justify-content: flex-end;
+      align-items: flex-end;
+      gap: 2rem;
+      flex-wrap: wrap;
+    }
+
+    .hero-text-card {
+      background: rgba(255, 255, 255, 0.92);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.6);
+      border-radius: 24px;
+      padding: 2.25rem 2.5rem;
+      max-width: 580px;
+      pointer-events: auto;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.12);
+    }
+
+    .hero-meta {
+      font-size: 0.65rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      font-weight: 700;
+      color: #666666;
+      margin-bottom: 0.6rem;
+    }
+
+    .hero-title {
+      font-family: 'Anton', Impact, sans-serif;
+      font-size: clamp(2.8rem, 5.5vw, 4.5rem);
+      font-weight: 400;
+      letter-spacing: -0.01em;
+      line-height: 0.94;
+      color: #000000;
+      text-transform: uppercase;
+      margin-bottom: 0.85rem;
+    }
+
+    .hero-sub {
+      font-size: 0.82rem;
+      color: #444444;
+      line-height: 1.55;
+      text-transform: uppercase;
+      letter-spacing: 0.02em;
+    }
+
+    .hero-hint-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: #000000;
+      color: #ffffff;
+      padding: 0.4rem 0.9rem;
+      border-radius: 9999px;
+      font-size: 0.68rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    /* ==========================================================================
+       SECTION UNDER HERO: BRUTALIST MINIMAL EDITORIAL THEME (CRAFTING CULTURE / SQUAD)
+       ========================================================================== */
+    .sim-section {
+      background: var(--bg-sim);
+      color: #000000;
+      border-top: 2px solid #000000;
+      padding: 3rem 2.5rem 6rem;
+      position: relative;
+    }
+
+    .sim-wrapper {
+      max-width: 1400px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 3.5rem;
+    }
+
+    /* SECTION HEADER EDITORIAL BANNER */
+    .editorial-hero-banner {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 2rem;
+      align-items: flex-end;
+      padding-bottom: 2rem;
+      border-bottom: 2px solid #000000;
+    }
+
+    .banner-title {
+      font-family: 'Anton', Impact, sans-serif;
+      font-size: clamp(3.5rem, 8vw, 7.5rem);
+      line-height: 0.88;
+      letter-spacing: -0.01em;
+      text-transform: uppercase;
+      color: #000000;
+    }
+
+    .banner-desc {
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: #000000;
+      max-width: 440px;
+      line-height: 1.5;
+    }
+
+    /* ==========================================================================
+       CONNECTED POLICIES NETWORK (INSPIRED BY 'A DIDACED TEAM, A UNITED CULTURE')
+       ========================================================================== */
+    .nodes-section {
+      position: relative;
+      background: #fafafa;
+      border: 1px solid #000000;
+      border-radius: 20px;
+      padding: 3.5rem 2rem;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      min-height: 280px;
+    }
+
+    /* Ambient curved lines in background */
+    .nodes-svg {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    .nodes-title {
+      position: relative;
+      z-index: 2;
+      font-family: 'Anton', Impact, sans-serif;
+      font-size: clamp(2.2rem, 5vw, 4.2rem);
+      line-height: 0.95;
+      text-transform: uppercase;
+      letter-spacing: -0.01em;
+      color: #000000;
+      max-width: 780px;
+      margin-bottom: 2rem;
+    }
+
+    .nodes-pill-row {
+      position: relative;
+      z-index: 2;
+      display: flex;
+      gap: 0.65rem;
+      flex-wrap: wrap;
+      justify-content: center;
+      max-width: 1000px;
+    }
+
+    .node-pill {
+      background: #ffffff;
+      border: 1.5px solid #000000;
+      border-radius: 9999px;
+      padding: 0.4rem 1.1rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: #000000;
+      transition: all 0.2s ease;
+      cursor: default;
+    }
+
+    .node-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #000000;
+      transition: background 0.2s ease, transform 0.2s ease;
+    }
+
+    .node-pill.active {
+      background: #000000;
+      color: #ffffff;
+      transform: scale(1.06);
+    }
+    .node-pill.active .node-dot {
+      background: #00ff73;
+      box-shadow: 0 0 8px #00ff73;
+    }
+
+    /* ==========================================================================
+       WORKLOAD SELECTOR (MINIMAL ALL-CAPS PILLS)
+       ========================================================================== */
+    .workload-bar {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      padding-bottom: 2rem;
+      border-bottom: 1px solid #e5e5e5;
+    }
+
+    .block-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+    }
+
+    .block-title-sm {
+      font-family: 'Anton', Impact, sans-serif;
+      font-size: 1.5rem;
+      letter-spacing: 0.02em;
+      text-transform: uppercase;
+    }
+
+    .block-meta {
+      font-size: 0.68rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+    }
+
+    .wk-tabs {
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+    }
+
+    .wk-tab {
+      background: #ffffff;
+      border: 1.5px solid #000000;
+      color: #000000;
+      font-family: inherit;
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      padding: 0.5rem 1.15rem;
+      border-radius: 9999px;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      white-space: nowrap;
+    }
+    .wk-tab:hover {
+      background: #f0f0f0;
+    }
+    .wk-tab.active {
+      background: #000000;
+      color: #ffffff;
+      border-color: #000000;
+    }
+
+    /* ==========================================================================
+       TWO COLUMN MAIN DASHBOARD GRID
+       ========================================================================== */
+    .dashboard-grid {
+      display: grid;
+      grid-template-columns: 360px 1fr;
+      gap: 2rem;
+      align-items: start;
+    }
+
+    .card-brutal {
+      background: #ffffff;
+      border: 1.5px solid #000000;
+      border-radius: 16px;
+      padding: 1.75rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1.25rem;
+    }
+
+    .card-brutal-title {
+      font-family: 'Anton', Impact, sans-serif;
+      font-size: 1.35rem;
+      letter-spacing: 0.02em;
+      text-transform: uppercase;
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      border-bottom: 1px solid #000000;
+      padding-bottom: 0.65rem;
+      margin-bottom: 0.25rem;
+    }
+
+    /* RAM FRAMES */
+    .ram-grid {
+      display: grid;
+      gap: 0.6rem;
+    }
+
+    .ram-slot {
+      border: 1.5px solid #000000;
+      border-radius: 10px;
+      padding: 0.75rem 1rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #fafafa;
+      transition: background 0.15s ease, border-color 0.15s ease;
+    }
+    .ram-slot.filled {
+      background: #ffffff;
+    }
+    .ram-slot.just-hit {
+      background: var(--green-bg);
+      border-color: var(--green);
+    }
+    .ram-slot.just-miss {
+      background: var(--red-bg);
+      border-color: var(--red);
+    }
+
+    .ram-slot-id {
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+    }
+    .ram-slot-val {
+      font-family: 'Anton', Impact, sans-serif;
+      font-size: 1.6rem;
+      line-height: 1;
+      letter-spacing: 0.02em;
+    }
+    .ram-slot.just-hit .ram-slot-val { color: var(--green); }
+    .ram-slot.just-miss .ram-slot-val { color: var(--red); }
+
+    .access-flash {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.75rem 1rem;
+      background: #fafafa;
+      border: 1px solid #000000;
+      border-radius: 10px;
+    }
+    .access-flash-page {
+      font-family: 'Anton', Impact, sans-serif;
+      font-size: 1.35rem;
+      line-height: 1;
+    }
+    .access-flash-pol {
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      color: var(--text-muted);
+    }
+
+    .tag {
+      font-size: 0.68rem;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      padding: 0.25rem 0.75rem;
+      border-radius: 9999px;
+      border: 1px solid;
+    }
+    .tag-hit { background: var(--green-bg); color: var(--green); border-color: var(--green); }
+    .tag-miss { background: var(--red-bg); color: var(--red); border-color: var(--red); }
+    .tag-idle { background: #f0f0f0; color: #555555; border-color: #cccccc; }
+
+    /* CONTROLS */
+    .btn-row {
+      display: flex;
+      gap: 0.5rem;
+    }
+    .btn-brutal {
+      flex: 1;
+      padding: 0.65rem 0.85rem;
+      font-family: inherit;
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      cursor: pointer;
+      border: 1.5px solid #000000;
+      background: #ffffff;
+      color: #000000;
+      border-radius: 9999px;
+      transition: all 0.15s ease;
+      text-align: center;
+    }
+    .btn-brutal:hover {
+      background: #f0f0f0;
+    }
+    .btn-primary-brutal {
+      background: #000000;
+      color: #ffffff;
+    }
+    .btn-primary-brutal:hover {
+      background: #252525;
+    }
+
+    .slider-wrap {
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+    }
+    .slider-label {
+      font-size: 0.7rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      display: flex;
+      justify-content: space-between;
+    }
+    input[type=range] {
+      width: 100%;
+      -webkit-appearance: none;
+      appearance: none;
+      height: 4px;
+      background: #000000;
+      border-radius: 9999px;
+      outline: none;
+    }
+    input[type=range]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 16px;
+      height: 16px;
+      background: #000000;
+      border: 2px solid #ffffff;
+      box-shadow: 0 0 0 1.5px #000000;
+      border-radius: 50%;
+      cursor: pointer;
+    }
+
+    /* STATUS */
+    .status-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.85rem;
+    }
+    .status-item {
+      display: flex;
+      flex-direction: column;
+      gap: 0.2rem;
+    }
+    .status-key {
+      font-size: 0.65rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      font-weight: 700;
+    }
+    .status-val {
+      font-size: 0.95rem;
+      font-weight: 700;
+      text-transform: uppercase;
+    }
+
+    /* ENGINE KPI BLOCK */
+    .kpi-big {
+      text-align: center;
+      padding: 0.5rem 0;
+    }
+    .kpi-big-val {
+      font-family: 'Anton', Impact, sans-serif;
+      font-size: 4.2rem;
+      letter-spacing: 0.02em;
+      line-height: 0.95;
+      color: #000000;
+    }
+    .kpi-big-label {
+      font-size: 0.7rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      font-weight: 700;
+      margin-top: 0.35rem;
+    }
+    .kpi-mini-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.65rem;
+    }
+    .kpi-mini {
+      background: #fafafa;
+      border: 1.5px solid #000000;
+      border-radius: 10px;
+      padding: 0.85rem 0.5rem;
+      text-align: center;
+    }
+    .kpi-mini-val {
+      font-family: 'Anton', Impact, sans-serif;
+      font-size: 1.8rem;
+      line-height: 1;
+    }
+    .kpi-mini-val.green { color: var(--green); }
+    .kpi-mini-val.red { color: var(--red); }
+    .kpi-mini-label {
+      font-size: 0.65rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      font-weight: 700;
+      margin-top: 0.2rem;
+    }
+
+    /* ==========================================================================
+       LEADERBOARD & RIGHT STACK
+       ========================================================================== */
+    .main-stack {
+      display: flex;
+      flex-direction: column;
+      gap: 2rem;
+    }
+
+    /* TABLE */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    th {
+      font-family: 'Anton', Impact, sans-serif;
+      font-size: 1rem;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: #000000;
+      font-weight: 400;
+      padding: 0.65rem 0.85rem;
+      text-align: left;
+      border-bottom: 2px solid #000000;
+    }
+    td {
+      padding: 0.85rem 0.85rem;
+      font-size: 0.85rem;
+      border-bottom: 1px solid #e5e5e5;
+      font-weight: 500;
+    }
+    tr:last-child td {
+      border-bottom: none;
+    }
+    tr.row-adaptive td {
+      font-weight: 700;
+      background: #fafafa;
+    }
+
+    .type-pill {
+      font-size: 0.65rem;
+      letter-spacing: 0.06em;
+      padding: 0.25rem 0.65rem;
+      border-radius: 9999px;
+      text-transform: uppercase;
+      font-weight: 700;
+      display: inline-block;
+      border: 1px solid;
+    }
+    .tp-adapt { background: #000000; color: #ffffff; border-color: #000000; }
+    .tp-static { background: #ffffff; color: #000000; border-color: #000000; }
+    .tp-theory { background: transparent; color: #888888; border-color: #cccccc; }
+
+    .bar-outer {
+      width: 100%;
+      height: 6px;
+      background: #eeeeee;
+      border-radius: 9999px;
+      overflow: hidden;
+      border: 1px solid #000000;
+    }
+    .bar-inner {
+      height: 100%;
+      background: #000000;
+      transition: width 0.3s ease;
+    }
+    .bar-inner.theory { background: #888888; }
+
+    /* TWO COL */
+    .two-col-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2rem;
+    }
+
+    /* OVERVIEW */
+    .ov-row {
+      display: grid;
+      grid-template-columns: 130px 1fr 60px;
+      gap: 0.85rem;
+      align-items: center;
+      margin-bottom: 0.85rem;
+      font-size: 0.8rem;
+      font-weight: 700;
+      text-transform: uppercase;
+    }
+    .ov-row:last-child {
+      margin-bottom: 0;
+    }
+    .ov-label {
+      color: #000000;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .ov-pct {
+      text-align: right;
+    }
+
+    /* AUDIT */
+    .audit-scroll {
+      max-height: 250px;
+      overflow-y: auto;
+      padding-right: 0.25rem;
+    }
+    .audit-scroll::-webkit-scrollbar { width: 4px; }
+    .audit-scroll::-webkit-scrollbar-thumb { background: #000000; border-radius: 9999px; }
+    .audit-entry {
+      padding: 0.75rem 0;
+      border-bottom: 1px solid #e5e5e5;
+      display: grid;
+      grid-template-columns: 55px 1fr;
+      gap: 0.75rem;
+      font-size: 0.8rem;
+    }
+    .audit-entry:last-child { border-bottom: none; }
+    .ae-step { color: var(--text-muted); font-weight: 700; }
+    .ae-change { font-weight: 700; text-transform: uppercase; margin-bottom: 0.15rem; }
+    .ae-reason { color: var(--text-muted); font-size: 0.72rem; line-height: 1.4; text-transform: uppercase; }
+    .ae-placeholder { color: var(--text-muted); font-size: 0.8rem; text-transform: uppercase; font-weight: 600; padding: 2rem 0; text-align: center; }
+
+    /* INSPECTOR */
+    .inspector-top {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1rem;
+      margin-bottom: 1.25rem;
+    }
+    .insp-card {
+      background: #fafafa;
+      border: 1.5px solid #000000;
+      border-radius: 10px;
+      padding: 0.75rem 1rem;
+    }
+    .insp-key {
+      font-size: 0.65rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 0.25rem;
+      font-weight: 700;
+    }
+    .insp-val {
+      font-family: 'Anton', Impact, sans-serif;
+      font-size: 1.35rem;
+      letter-spacing: 0.02em;
+    }
+    .inspector-frames {
+      display: flex;
+      gap: 0.6rem;
+      flex-wrap: wrap;
+    }
+    .frame-box {
+      border: 1.5px solid #000000;
+      border-radius: 10px;
+      background: #fafafa;
+      padding: 0.75rem 1.1rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.25rem;
+      min-width: 76px;
+    }
+    .frame-box.f-full {
+      background: #ffffff;
+    }
+    .frame-box.f-hit {
+      border-color: var(--green);
+      background: var(--green-bg);
+    }
+    .frame-box.f-miss {
+      border-color: var(--red);
+      background: var(--red-bg);
+    }
+    .frame-box-id {
+      font-size: 0.65rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      font-weight: 700;
+    }
+    .frame-box-val {
+      font-family: 'Anton', Impact, sans-serif;
+      font-size: 1.6rem;
+      line-height: 1;
+    }
+    .frame-box.f-hit .frame-box-val { color: var(--green); }
+    .frame-box.f-miss .frame-box-val { color: var(--red); }
+
+    /* BELADY */
+    .belady-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.25rem;
+    }
+    .belady-card {
+      background: #fafafa;
+      border: 1.5px solid #000000;
+      border-radius: 12px;
+      padding: 1.25rem;
+    }
+    .belady-title {
+      font-family: 'Anton', Impact, sans-serif;
+      font-size: 1.15rem;
+      text-transform: uppercase;
+      letter-spacing: 0.02em;
+      margin-bottom: 0.65rem;
+    }
+    .bc-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 0.5rem;
+      font-size: 0.8rem;
+      font-weight: 600;
+    }
+    .bc-policy { color: var(--text-muted); text-transform: uppercase; }
+    .bc-val { font-weight: 700; }
+    .bc-warn { color: var(--amber); }
+    .bc-ok { color: var(--green); }
+
+    /* FOOTER */
+    footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-top: 3rem;
+      margin-top: 2rem;
+      border-top: 2px solid #000000;
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #000000;
+    }
+
+    @media (max-width: 1024px) {
+      .dashboard-grid {
+        grid-template-columns: 1fr;
+      }
+      .two-col-grid {
+        grid-template-columns: 1fr;
+      }
+      .belady-grid {
+        grid-template-columns: 1fr;
+      }
+      .editorial-hero-banner {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ==========================================================================
+       HERO FULLSCREEN: PORTRAIT IMAGE + BG VIDEO LOOP + FADED AREA REVEAL
+       ========================================================================== -->
+  <section class="hero-screen" id="heroScreen">
+    <!-- Looping background video -->
+    <video class="hero-video" id="heroVideo" src="hero.mp4" autoplay loop muted playsinline preload="auto"></video>
+
+    <!-- Canvas that holds hero.png and executes the interactive faded area reveal -->
+    <canvas class="hero-canvas" id="heroCanvas"></canvas>
+
+    <!-- Minimal Editorial Overlay -->
+    <div class="hero-overlay">
+      <div class="hero-nav">
+        <div class="hero-pill-badge">
+          <span class="pulse-dot"></span>
+          <span>OSH020 &bull; CYBERNETIC RIG</span>
+        </div>
+        <a href="#simulator" class="hero-pill-link">
+          <span>Explore Simulator &darr;</span>
+        </a>
+      </div>
+
+      <div class="hero-content">
+        <div class="hero-text-card">
+          <div class="hero-meta">Adaptive Memory Management Engine</div>
+          <h1 class="hero-title">Page<br>Replacement.</h1>
+          <p class="hero-sub">
+            Workload-adaptive memory engine benchmarking LRU, FIFO, Clock, ARC, LFU and Optimal (MIN). Hover across the portrait to reveal the live cybernetic stream underneath with smooth faded edges.
+          </p>
+          <div style="display: flex; gap: 0.75rem; align-items: center; flex-wrap: wrap; margin-top: 1.25rem;">
+            <div class="hero-hint-pill">
+              <span>&bull;</span>
+              <span>Hover cursor to reveal video</span>
+            </div>
+            <a href="#simulator" class="hero-pill-link" style="padding: 0.45rem 1.2rem; font-size: 0.7rem;">
+              <span>Launch Dashboard &darr;</span>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==========================================================================
+       SECTION UNDER HERO: BRUTALIST MINIMAL EDITORIAL (CRAFTING CULTURE / SQUAD THEME)
+       ========================================================================== -->
+  <section class="sim-section" id="simulator">
+    <div class="sim-wrapper">
+
+      <!-- 1. EDITORIAL HERO BANNER (CRAFTING CULTURE AESTHETIC) -->
+      <div class="editorial-hero-banner">
+        <div>
+          <h2 class="banner-title">CRAFTING<br>MEMORY</h2>
+        </div>
+        <div>
+          <p class="banner-desc">
+            OSH020 — WORKLOAD-ADAPTIVE PAGE REPLACEMENT ENGINE BENCHMARKING MULTI-PHASE MEMORY SYSTEMS. ARCHITECTED FOR LOW PAGE FAULT RATIOS.
+          </p>
+        </div>
+      </div>
+
+      <!-- 2. CONNECTED POLICIES NETWORK (INSPIRED BY 'A DIDACED TEAM, A UNITED CULTURE') -->
+      <div class="nodes-section">
+        <!-- Background curved vector lines connecting the nodes -->
+        <svg class="nodes-svg" viewBox="0 0 1000 280" preserveAspectRatio="none">
+          <path d="M 120 70 C 260 20, 360 160, 500 130 C 640 100, 780 200, 880 90" stroke="#000000" stroke-width="1.2" fill="none" opacity="0.35"/>
+          <path d="M 160 220 C 320 270, 420 80, 560 140 C 700 200, 800 50, 920 200" stroke="#000000" stroke-width="1.2" fill="none" opacity="0.25"/>
+          <path d="M 80 150 C 240 70, 480 230, 680 110 C 820 40, 900 180, 960 130" stroke="#000000" stroke-width="1" stroke-dasharray="4,4" fill="none" opacity="0.3"/>
+        </svg>
+
+        <h3 class="nodes-title">6 POLICIES, ONE ADAPTIVE ENGINE</h3>
+
+        <div class="nodes-pill-row">
+          <div class="node-pill" id="node-LRU"><span class="node-dot"></span><span>LRU</span></div>
+          <div class="node-pill" id="node-FIFO"><span class="node-dot"></span><span>FIFO</span></div>
+          <div class="node-pill" id="node-Clock"><span class="node-dot"></span><span>CLOCK</span></div>
+          <div class="node-pill" id="node-ARC"><span class="node-dot"></span><span>ARC</span></div>
+          <div class="node-pill" id="node-LFU"><span class="node-dot"></span><span>LFU</span></div>
+          <div class="node-pill" id="node-Optimal"><span class="node-dot"></span><span>OPTIMAL (MIN)</span></div>
+        </div>
+      </div>
+
+      <!-- 3. WORKLOAD SELECTOR -->
+      <div class="workload-bar">
+        <div class="block-header">
+          <span class="block-title-sm">SELECT WORKLOAD PATTERN</span>
+          <span class="block-meta">10 BENCHMARK SUITES</span>
+        </div>
+        <div class="wk-tabs" id="tabRow">
+          <button class="wk-tab active" data-wk="mixed">Multi-Phase</button>
+          <button class="wk-tab" data-wk="scan">Sequential</button>
+          <button class="wk-tab" data-wk="loop">Cyclic Loop</button>
+          <button class="wk-tab" data-wk="locality">Locality</button>
+          <button class="wk-tab" data-wk="random">Random</button>
+          <button class="wk-tab" data-wk="belady-trace">Belady Trace</button>
+          <button class="wk-tab" data-wk="c1">C1 Baseline</button>
+          <button class="wk-tab" data-wk="c2">C2 Switch</button>
+          <button class="wk-tab" data-wk="c3">C3 Budget</button>
+          <button class="wk-tab" data-wk="c5">C5 Dirty</button>
+        </div>
+      </div>
+
+      <!-- 4. CORE INTERACTIVE DASHBOARD -->
+      <div class="dashboard-grid">
+
+        <!-- LEFT SIDEBAR: RAM FRAMES & CONTROLS -->
+        <aside style="display: flex; flex-direction: column; gap: 2rem;">
+
+          <!-- RAM Frames Live Visualization -->
+          <div class="card-brutal">
+            <div class="card-brutal-title">
+              <span>RAM FRAMES</span>
+              <span style="font-size:0.68rem; color:var(--text-muted);">PHYSICAL SLOTS</span>
+            </div>
+            <div class="ram-grid" id="ramGrid"></div>
+            <div class="access-flash" id="accessFlash">
+              <span class="access-flash-page">--</span>
+              <span class="access-flash-pol">IDLE</span>
+              <span class="tag tag-idle">IDLE</span>
+            </div>
+          </div>
+
+          <!-- Controls Panel -->
+          <div class="card-brutal">
+            <div class="card-brutal-title">
+              <span>CONTROLS</span>
+              <span style="font-size:0.68rem; color:var(--text-muted);">EXECUTION</span>
+            </div>
+            <div class="btn-row">
+              <button class="btn-brutal btn-primary-brutal" id="btnPlay">RUN</button>
+              <button class="btn-brutal" id="btnStep">STEP</button>
+              <button class="btn-brutal" id="btnReset">RESET</button>
+            </div>
+            <div class="slider-wrap">
+              <div class="slider-label"><span>FRAMES</span><strong id="lblFrames">4</strong></div>
+              <input type="range" id="sliderFrames" min="2" max="8" value="4">
+            </div>
+            <div class="slider-wrap">
+              <div class="slider-label"><span>SPEED</span><strong id="lblSpeed">MEDIUM</strong></div>
+              <input type="range" id="sliderSpeed" min="1" max="5" value="3">
+            </div>
+          </div>
+
+          <!-- Access Status Panel -->
+          <div class="card-brutal">
+            <div class="card-brutal-title">
+              <span>ACCESS STATUS</span>
+              <span style="font-size:0.68rem; color:var(--text-muted);">TELEMETRY</span>
+            </div>
+            <div class="status-grid">
+              <div class="status-item"><span class="status-key">STEP</span><span class="status-val" id="stStep">0 / 0</span></div>
+              <div class="status-item"><span class="status-key">PAGE</span><span class="status-val" id="stPage">--</span></div>
+              <div class="status-item"><span class="status-key">RESULT</span><span id="stBadge"></span></div>
+              <div class="status-item"><span class="status-key">POLICY</span><span class="status-val" id="stPolicy">LRU</span></div>
+              <div class="status-item" style="grid-column:1/-1"><span class="status-key">PATTERN</span><span class="status-val" id="stPattern" style="color:var(--text-muted); font-size:0.8rem;">--</span></div>
+            </div>
+          </div>
+
+          <!-- Engine KPIs -->
+          <div class="card-brutal">
+            <div class="card-brutal-title">
+              <span>ENGINE KPI</span>
+              <span style="font-size:0.68rem; color:var(--text-muted);">EFFICIENCY</span>
+            </div>
+            <div class="kpi-big">
+              <div class="kpi-big-val" id="kpiHitRate">0.0%</div>
+              <div class="kpi-big-label">HIT RATE</div>
+            </div>
+            <div class="kpi-mini-row">
+              <div class="kpi-mini"><div class="kpi-mini-val green" id="kpiHits">0</div><div class="kpi-mini-label">HITS</div></div>
+              <div class="kpi-mini"><div class="kpi-mini-val red" id="kpiFaults">0</div><div class="kpi-mini-label">FAULTS</div></div>
+            </div>
+            <p style="font-size:0.7rem; font-weight:700; color:var(--text-muted); text-transform:uppercase; text-align:center; margin-top:0.4rem;" id="kpiHitsOf">OF 0 ACCESSES</p>
+            <p style="font-size:0.75rem; font-weight:700; text-transform:uppercase; text-align:center;">SWITCHES: <strong id="kpiSwitches">0</strong></p>
+          </div>
+
+        </aside>
+
+        <!-- RIGHT COLUMN: LEADERBOARD & BENCHMARKS -->
+        <main class="main-stack">
+
+          <!-- Policy Leaderboard -->
+          <div class="card-brutal">
+            <div class="card-brutal-title">
+              <span>POLICY LEADERBOARD</span>
+              <span style="font-size:0.68rem; color:var(--text-muted);">ALL POLICIES, SAME WORKLOAD</span>
+            </div>
+            <table>
+              <thead>
+                <tr>
+                  <th>POLICY</th><th>TYPE</th><th>HITS</th><th>FAULTS</th><th>HIT RATE</th><th style="width:140px">BAR</th>
+                </tr>
+              </thead>
+              <tbody id="leaderTbody"></tbody>
+            </table>
+          </div>
+
+          <!-- Two-Col Overview & Adaptive Decisions -->
+          <div class="two-col-grid">
+            <div class="card-brutal">
+              <div class="card-brutal-title">
+                <span>OVERVIEW</span>
+                <span style="font-size:0.68rem; color:var(--text-muted);">HIT RATE %</span>
+              </div>
+              <div id="overviewRows"></div>
+            </div>
+            <div class="card-brutal">
+              <div class="card-brutal-title">
+                <span>ADAPTIVE DECISIONS</span>
+                <span style="font-size:0.68rem; color:var(--text-muted);" id="switchCount">0 SWITCHES</span>
+              </div>
+              <div class="audit-scroll" id="auditScroll">
+                <p class="ae-placeholder">RUN SIMULATION TO SEE POLICY SWITCHES.</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Step Inspector -->
+          <div class="card-brutal">
+            <div class="card-brutal-title">
+              <span>STEP INSPECTOR</span>
+              <span style="font-size:0.68rem; color:var(--text-muted);">STEP <span id="inspStepLbl">0</span></span>
+            </div>
+            <div style="margin-bottom:0.75rem">
+              <input type="range" id="inspSlider" min="0" max="0" value="0" style="width:100%">
+            </div>
+            <div class="inspector-top">
+              <div class="insp-card"><div class="insp-key">PAGE</div><div class="insp-val" id="inspPage">--</div></div>
+              <div class="insp-card"><div class="insp-key">RESULT</div><div class="insp-val" id="inspResult">--</div></div>
+              <div class="insp-card"><div class="insp-key">POLICY</div><div class="insp-val" id="inspPolicy">--</div></div>
+              <div class="insp-card"><div class="insp-key">EVICTED</div><div class="insp-val" id="inspEvicted">--</div></div>
+            </div>
+            <div class="inspector-frames" id="inspFrames"></div>
+          </div>
+
+          <!-- Belady's Anomaly -->
+          <div class="card-brutal">
+            <div class="card-brutal-title">
+              <span>BELADY'S ANOMALY</span>
+              <span style="font-size:0.68rem; color:var(--text-muted);">FIFO PARADOX WITH MORE FRAMES</span>
+            </div>
+            <div class="belady-grid">
+              <div class="belady-card">
+                <div class="belady-title">REFERENCE TRACE</div>
+                <p style="font-size:0.85rem; font-weight:700; margin-top:0.35rem;">1, 2, 3, 4, 1, 2, 5, 1, 2, 3, 4, 5</p>
+                <p style="font-size:0.7rem; color:var(--text-muted); text-transform:uppercase; font-weight:600; margin-top:0.5rem; line-height:1.45;">FIFO CAN CAUSE MORE FAULTS WHEN ALLOCATED 4 FRAMES VS 3.</p>
+              </div>
+              <div class="belady-card">
+                <div class="belady-title">FIFO</div>
+                <div class="bc-row"><span class="bc-policy">3 FRAMES</span><span class="bc-val bc-ok" id="belady3f">--</span></div>
+                <div class="bc-row"><span class="bc-policy">4 FRAMES</span><span class="bc-val bc-warn" id="belady4f">-- (ANOMALY)</span></div>
+              </div>
+              <div class="belady-card">
+                <div class="belady-title">LRU (STACK)</div>
+                <div class="bc-row"><span class="bc-policy">3 FRAMES</span><span class="bc-val bc-ok" id="lru3f">--</span></div>
+                <div class="bc-row"><span class="bc-policy">4 FRAMES</span><span class="bc-val bc-ok" id="lru4f">--</span></div>
+              </div>
+            </div>
+          </div>
+
+        </main>
+      </div>
+
+      <!-- FOOTER -->
+      <footer>
+        <span>OSH020 &bull; WORKLOAD-ADAPTIVE PAGE REPLACEMENT</span>
+        <span>CRAFTING CULTURE &bull; 2026</span>
+      </footer>
+
+    </div>
+  </section>
+
+  <!-- ==========================================================================
+       SCRIPTS: HERO FADED AREA REVEAL + SIMULATION ENGINE
+       ========================================================================== -->
+  <script>
+  /* --------------------------------------------------------------------------
+     1. HERO FADED AREA REVEAL ENGINE (NO RIPPLES — SMOOTH GRADIENT FADE)
+     -------------------------------------------------------------------------- */
+  (function initFadeAreaReveal() {
+    const canvas = document.getElementById('heroCanvas');
+    const heroScreen = document.getElementById('heroScreen');
+    const video = document.getElementById('heroVideo');
+    if (!canvas || !heroScreen) return;
+
+    if (video) {
+      video.muted = true;
+      video.defaultMuted = true;
+      video.play().catch(() => {
+        const startVideo = () => {
+          video.play().catch(() => {});
+          window.removeEventListener('pointerdown', startVideo);
+          window.removeEventListener('pointermove', startVideo);
+        };
+        window.addEventListener('pointerdown', startVideo, { once: true });
+        window.addEventListener('pointermove', startVideo, { once: true });
+      });
+    }
+
+    const ctx = canvas.getContext('2d');
+    const heroImg = new Image();
+    heroImg.src = 'hero.png'; // Cybernetic Portrait with Orange Tendrils
+    let imgLoaded = false;
+    heroImg.onload = () => { imgLoaded = true; };
+
+    let width = 0, height = 0;
+    let mouseX = -1000, mouseY = -1000;
+    let curX = -1000, curY = -1000;
+    let targetRadius = 0;
+    let currentRadius = 0;
+
+    function resize() {
+      const rect = heroScreen.getBoundingClientRect();
+      width = rect.width;
+      height = rect.height;
+      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      canvas.width = Math.round(width * dpr);
+      canvas.height = Math.round(height * dpr);
+      canvas.style.width = width + 'px';
+      canvas.style.height = height + 'px';
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    }
+
+    window.addEventListener('resize', resize);
+    resize();
+
+    const getRevealRadius = () => Math.max(220, Math.min(width, height) * 0.32);
+
+    heroScreen.addEventListener('mouseenter', (e) => {
+      const rect = heroScreen.getBoundingClientRect();
+      mouseX = e.clientX - rect.left;
+      mouseY = e.clientY - rect.top;
+      curX = mouseX;
+      curY = mouseY;
+      targetRadius = getRevealRadius();
+    });
+
+    heroScreen.addEventListener('mousemove', (e) => {
+      const rect = heroScreen.getBoundingClientRect();
+      mouseX = e.clientX - rect.left;
+      mouseY = e.clientY - rect.top;
+      targetRadius = getRevealRadius();
+    });
+
+    heroScreen.addEventListener('mouseleave', () => {
+      targetRadius = 0;
+    });
+
+    // Touch support for mobile / tablets
+    heroScreen.addEventListener('touchstart', (e) => {
+      const touch = e.touches[0];
+      const rect = heroScreen.getBoundingClientRect();
+      mouseX = touch.clientX - rect.left;
+      mouseY = touch.clientY - rect.top;
+      curX = mouseX;
+      curY = mouseY;
+      targetRadius = getRevealRadius();
+    }, { passive: true });
+
+    heroScreen.addEventListener('touchmove', (e) => {
+      const touch = e.touches[0];
+      const rect = heroScreen.getBoundingClientRect();
+      mouseX = touch.clientX - rect.left;
+      mouseY = touch.clientY - rect.top;
+      targetRadius = getRevealRadius();
+    }, { passive: true });
+
+    heroScreen.addEventListener('touchend', () => {
+      targetRadius = 0;
+    });
+
+    function drawCover(ctx, img, targetW, targetH) {
+      const imgW = img.naturalWidth || img.width || 1586;
+      const imgH = img.naturalHeight || img.height || 992;
+      const scale = Math.max(targetW / imgW, targetH / imgH);
+      const dw = imgW * scale;
+      const dh = imgH * scale;
+      const dx = (targetW - dw) / 2;
+      const dy = (targetH - dh) / 2;
+      ctx.drawImage(img, dx, dy, dw, dh);
+    }
+
+    // Animation Loop
+    function render() {
+      requestAnimationFrame(render);
+      if (!width || !height) return;
+
+      // Smooth lerp coordinates and reveal radius for soft trailing inertia
+      curX += (mouseX - curX) * 0.18;
+      curY += (mouseY - curY) * 0.18;
+      currentRadius += (targetRadius - currentRadius) * 0.14;
+
+      // 1. Draw static portrait image
+      ctx.globalCompositeOperation = 'source-over';
+      ctx.clearRect(0, 0, width, height);
+
+      if (imgLoaded) {
+        drawCover(ctx, heroImg, width, height);
+      } else {
+        ctx.fillStyle = '#a1b384';
+        ctx.fillRect(0, 0, width, height);
+      }
+
+      // 2. If hovering, reveal area with soft feathered fades on all sides
+      if (currentRadius > 1) {
+        ctx.save();
+        ctx.globalCompositeOperation = 'destination-out';
+
+        const r = currentRadius;
+        // Radial gradient: 100% video in center, feathered fade on sides
+        const grad = ctx.createRadialGradient(curX, curY, r * 0.25, curX, curY, r);
+        grad.addColorStop(0, 'rgba(0, 0, 0, 1)');       // Center: fully clear -> video visible
+        grad.addColorStop(0.55, 'rgba(0, 0, 0, 0.95)'); // Core view
+        grad.addColorStop(0.8, 'rgba(0, 0, 0, 0.5)');   // Smooth fade
+        grad.addColorStop(1, 'rgba(0, 0, 0, 0)');       // Outer edge: completely faded into image
+
+        ctx.fillStyle = grad;
+        ctx.beginPath();
+        ctx.arc(curX, curY, r, 0, Math.PI * 2);
+        ctx.fill();
+
+        ctx.restore();
+      }
+    }
+
+    requestAnimationFrame(render);
+  })();
+
+  /* --------------------------------------------------------------------------
+     2. WORKLOAD GENERATORS & ALGORITHM ENGINES
+     -------------------------------------------------------------------------- */
+  const Gen = {
+    sequential:(n=60,s=0)=>Array.from({length:n},(_,i)=>s+i),
+    loop:(n=60,sz=5,s=0)=>Array.from({length:n},(_,i)=>s+i%sz),
+    random:(n=60,u=15)=>Array.from({length:n},()=>Math.floor(Math.random()*u)),
+    locality(n=80,ws=4,total=20,prob=0.85){
+      const hot=Array.from({length:ws},(_,i)=>i);
+      const cold=Array.from({length:total-ws},(_,i)=>i+ws);
+      return Array.from({length:n},()=>Math.random()<prob||!cold.length?hot[Math.floor(Math.random()*hot.length)]:cold[Math.floor(Math.random()*cold.length)]);
+    },
+    belady:()=>[1,2,3,4,1,2,5,1,2,3,4,5],
+    c1:()=>[1,2,3,1,4,1],c2:()=>[1,2,3,1,4,1],
+    c3:()=>Array.from({length:200},(_,i)=>(i%20)+1),c5:()=>[1,2,3,1,4],
+    mixed(pLen=25,f=4){return[...this.locality(pLen,f,f*3,0.9),...this.sequential(pLen,100),...this.loop(pLen,f+1,0),...this.random(pLen,f*4),...this.locality(pLen,f,f*3,0.92)];}
+  };
+
+  class FIFO{constructor(){this.name="FIFO";this.q=[];}reset(){this.q=[];}access(p,hit){if(!hit&&!this.q.includes(p))this.q.push(p);}evict(res){while(this.q.length){const v=this.q.shift();if(res.has(v))return v;}return[...res][0];}}
+  class LRU{constructor(){this.name="LRU";this.ord=[];}reset(){this.ord=[];}access(p){this.ord=this.ord.filter(x=>x!==p);this.ord.push(p);}evict(res){for(const p of this.ord){if(res.has(p)){this.ord=this.ord.filter(x=>x!==p);return p;}}return[...res][0];}}
+  class Clock{constructor(){this.name="Clock";this.buf=[];this.bits=new Map();this.hand=0;}reset(){this.buf=[];this.bits.clear();this.hand=0;}access(p,hit){this.bits.set(p,1);if(!hit&&!this.buf.includes(p))this.buf.push(p);}evict(res){this.buf=this.buf.filter(p=>res.has(p));if(!this.buf.length)return[...res][0];if(this.hand>=this.buf.length)this.hand=0;for(let i=0;i<this.buf.length*2+1;i++){const c=this.buf[this.hand];if(this.bits.get(c)){this.bits.set(c,0);this.hand=(this.hand+1)%this.buf.length;}else{this.buf.splice(this.hand,1);this.bits.delete(c);this.hand=this.buf.length?this.hand%this.buf.length:0;return c;}}const v=this.buf.shift();this.hand=0;return v;}}
+  class LFU{constructor(){this.name="LFU";this.freq=new Map();this.t=new Map();this.c=0;}reset(){this.freq.clear();this.t.clear();this.c=0;}access(p){this.c++;this.freq.set(p,(this.freq.get(p)||0)+1);if(!this.t.has(p))this.t.set(p,this.c);}evict(res){let mf=Infinity,mt=Infinity,v=null;for(const p of res){const f=this.freq.get(p)||0,t=this.t.get(p)||0;if(f<mf||(f===mf&&t<mt)){mf=f;mt=t;v=p;}}if(v!==null){this.freq.delete(v);this.t.delete(v);return v;}return[...res][0];}}
+  class ARC{constructor(c=4){this.name="ARC";this.c=c;this.p=0;this.t1=[];this.t2=[];this.b1=[];this.b2=[];}reset(){this.p=0;this.t1=[];this.t2=[];this.b1=[];this.b2=[];}access(pg){const rm=(a,x)=>a.splice(a.indexOf(x),1);if(this.t1.includes(pg)){rm(this.t1,pg);this.t2.push(pg);}else if(this.t2.includes(pg)){rm(this.t2,pg);this.t2.push(pg);}else if(this.b1.includes(pg)){this.p=Math.min(this.c,this.p+Math.max(1,this.b2.length/(this.b1.length||1)));rm(this.b1,pg);this.t2.push(pg);}else if(this.b2.includes(pg)){this.p=Math.max(0,this.p-Math.max(1,this.b1.length/(this.b2.length||1)));rm(this.b2,pg);this.t2.push(pg);}else{this.t1.push(pg);}}evict(res){const pick=(arr)=>{for(let i=0;i<arr.length;i++)if(res.has(arr[i]))return arr.splice(i,1)[0];return null;};if(this.t1.length>0&&(this.t1.length>this.p||(this.b2.length>0&&this.t1.length===Math.floor(this.p)))){const v=pick(this.t1);if(v!==null){this.b1.push(v);return v;}}const v=pick(this.t2);if(v!==null){this.b2.push(v);return v;}return[...res][0];}}
+  class Optimal{constructor(stream=[]){this.name="Optimal (MIN)";this.stream=stream;this.idx=0;}reset(){this.idx=0;}access(){this.idx++;}evict(res){let far=-1,v=null;const rem=this.stream.slice(this.idx+1);for(const p of res){const d=rem.indexOf(p);const dist=d===-1?Infinity:d;if(dist>far){far=dist;v=p;}}return v??[...res][0];}}
+
+  function analyze(win,frames){
+    const n=win.length;if(n<4)return{pattern:"COLLECTING",rec:"LRU",reason:"NOT ENOUGH TRACE DATA"};
+    const unique=new Set(win),uRatio=unique.size/n;let mono=true;
+    for(let i=0;i<n-1;i++)if(win[i+1]<=win[i]){mono=false;break;}
+    if((mono&&uRatio>=0.85)||uRatio>=0.90)return{pattern:"SEQUENTIAL SCAN",rec:"FIFO",reason:"PAGES SCANNED ONCE"};
+    const maxP=Math.min(frames*2+2,Math.floor(n/2)+1);let bP=0,bR=0;
+    for(let p=2;p<maxP;p++){let m=0;for(let i=p;i<n;i++)if(win[i]===win[i-p])m++;const r=m/(n-p);if(r>0.75&&r>bR){bR=r;bP=p;}}
+    if(bP>0)return bP>frames?{pattern:"LOOP > RAM CAPACITY",rec:"FIFO",reason:"CYCLIC LOOP EXCEEDS FRAMES"}:{pattern:"LOOP <= RAM CAPACITY",rec:"LRU",reason:"CYCLIC LOOP FITS IN RAM"};
+    const freq={};for(const p of win)freq[p]=(freq[p]||0)+1;
+    const topSum=Object.values(freq).sort((a,b)=>b-a).slice(0,frames).reduce((a,b)=>a+b,0);
+    if(topSum/n>=0.65)return{pattern:"HIGH LOCALITY",rec:"LRU",reason:"HOT PAGES REPEAT FREQUENTLY"};
+    if(uRatio>0.7)return{pattern:"RANDOM ACCESS",rec:"Clock",reason:"NO DETERMINISTIC PATTERN"};
+    return{pattern:"MIXED ADAPTIVE",rec:"ARC",reason:"ARC SELF-TUNES SPLIT"};
+  }
+
+  function simulate(policy,stream,numFrames){
+    policy.reset();const res=new Set();const slots=Array(numFrames).fill(null);let hits=0;
+    for(const page of stream){if(res.has(page)){hits++;if(policy.access)policy.access(page,true);}else{if(res.size<numFrames){const i=slots.indexOf(null);slots[i]=page;res.add(page);}else{const v=policy.evict(res);res.delete(v);const i=slots.indexOf(v);slots[i]=page;res.add(page);}if(policy.access)policy.access(page,false);}}
+    const total=stream.length;return{hits,faults:total-hits,total,rate:total?(hits/total*100).toFixed(1):"0.0"};
+  }
+
+  /* --------------------------------------------------------------------------
+     3. CONTROLLER & UI BINDINGS
+     -------------------------------------------------------------------------- */
+  const $=id=>document.getElementById(id);
+  let numFrames=4,wkType="mixed",stream=[],stepIdx=0;
+  let isPlaying=false,timer=null,speed=300;
+  const pols={FIFO:new FIFO(),LRU:new LRU(),Clock:new Clock(),LFU:new LFU(),ARC:new ARC(4)};
+  let activePolName="LRU",activePol=pols.LRU;
+  let res=new Set(),slots=[],win=[],stepsNoSwitch=5;
+  let adaptHits=0,adaptFaults=0,switchLog=[],history=[],benchData=[];
+
+  function updateActivePolicyNode(name){
+    document.querySelectorAll(".node-pill").forEach(el=>el.classList.remove("active"));
+    const target = $("node-" + name) || $("node-" + (name.includes("Optimal") ? "Optimal" : name));
+    if(target) target.classList.add("active");
+  }
+
+  function loadWorkload(){
+    if(wkType==="mixed")stream=Gen.mixed(25,numFrames);
+    else if(wkType==="scan")stream=Gen.sequential(60);
+    else if(wkType==="loop")stream=Gen.loop(60,numFrames+1);
+    else if(wkType==="locality")stream=Gen.locality(80,numFrames,numFrames*3);
+    else if(wkType==="random")stream=Gen.random(60,numFrames*4);
+    else if(wkType==="belady-trace")stream=Gen.belady();
+    else if(wkType==="c1"){numFrames=3;$("sliderFrames").value=3;$("lblFrames").textContent=3;stream=Gen.c1();}
+    else if(wkType==="c2"){numFrames=3;$("sliderFrames").value=3;$("lblFrames").textContent=3;stream=Gen.c2();}
+    else if(wkType==="c3"){numFrames=4;$("sliderFrames").value=4;$("lblFrames").textContent=4;stream=Gen.c3();}
+    else if(wkType==="c5"){numFrames=3;$("sliderFrames").value=3;$("lblFrames").textContent=3;stream=Gen.c5();}
+    resetSim();
+  }
+
+  function resetSim(){
+    pause();stepIdx=0;adaptHits=0;adaptFaults=0;switchLog=[];history=[];win=[];res.clear();
+    slots=Array(numFrames).fill(null);stepsNoSwitch=5;activePolName="LRU";activePol=pols.LRU;
+    for(const p of Object.values(pols))p.reset();pols.ARC=new ARC(numFrames);
+    renderRam();updateScorecard();updateActivePolicyNode("LRU");
+    $("stStep").textContent="0 / "+stream.length;
+    $("stPage").textContent="--";$("stBadge").textContent="";$("stPolicy").textContent="LRU";$("stPattern").textContent="--";
+    $("accessFlash").innerHTML='<span class="access-flash-page">--</span><span class="access-flash-pol">IDLE</span><span class="tag tag-idle">IDLE</span>';
+    $("inspSlider").max=Math.max(0,stream.length-1);$("inspSlider").value=0;$("inspStepLbl").textContent="0";
+    renderInspector(0);
+    $("auditScroll").innerHTML='<p class="ae-placeholder">RUN SIMULATION TO SEE POLICY SWITCHES.</p>';
+    $("switchCount").textContent="0 SWITCHES";computeBenchmarks();
+  }
+
+  function play(){if(stepIdx>=stream.length)resetSim();isPlaying=true;$("btnPlay").textContent="PAUSE";timer=setInterval(()=>{if(stepIdx>=stream.length)pause();else step();},speed);}
+  function pause(){isPlaying=false;$("btnPlay").textContent="RUN";if(timer){clearInterval(timer);timer=null;}}
+
+  function step(){
+    if(stepIdx>=stream.length){pause();return;}
+    const page=stream[stepIdx];win.push(page);if(win.length>25)win.shift();stepsNoSwitch++;
+    const{pattern,rec,reason}=analyze(win,numFrames);
+    if(rec!==activePolName&&stepsNoSwitch>=5&&win.length>=6){
+      const from=activePolName;activePolName=rec;activePol=pols[rec]||pols.LRU;stepsNoSwitch=0;
+      const sw={step:stepIdx,from,to:rec,pattern,reason};switchLog.push(sw);prependAudit(sw);
+      $("switchCount").textContent=switchLog.length+" SWITCH"+(switchLog.length!==1?"ES":"");
+      updateActivePolicyNode(rec);
+    }
+    const isHit=res.has(page);let evicted=null;
+    if(isHit){adaptHits++;if(activePol.access)activePol.access(page,true);}
+    else{adaptFaults++;if(res.size<numFrames){const i=slots.indexOf(null);slots[i]=page;res.add(page);}else{evicted=activePol.evict(res);res.delete(evicted);const i=slots.indexOf(evicted);slots[i]=page;res.add(page);}if(activePol.access)activePol.access(page,false);}
+    history.push({page,isHit,evicted,policy:activePolName,frames:[...slots]});stepIdx++;
+    renderRam(page,isHit);updateScorecard();updateStatus(page,isHit,pattern);updateBenchAdaptive();
+    $("inspSlider").max=Math.max(0,history.length-1);
+  }
+
+  function renderRam(hl=null,isHit=false){
+    const cols=numFrames<=4?2:3;$("ramGrid").style.gridTemplateColumns="repeat("+cols+",1fr)";
+    $("ramGrid").innerHTML=slots.map((p,i)=>{let cls="ram-slot";if(p!==null)cls+=" filled";if(p===hl&&hl!==null)cls+=isHit?" just-hit":" just-miss";return'<div class="'+cls+'"><span class="ram-slot-id">F'+i+'</span><span class="ram-slot-val">'+(p!==null?p:"--")+'</span></div>';}).join("");
+    if(hl!==null){const tag=isHit?'<span class="tag tag-hit">HIT</span>':'<span class="tag tag-miss">FAULT</span>';$("accessFlash").innerHTML='<span class="access-flash-page">P'+hl+'</span><span class="access-flash-pol">'+activePolName+'</span>'+tag;}
+  }
+
+  function updateScorecard(){const total=adaptHits+adaptFaults;const rate=total?(adaptHits/total*100).toFixed(1):"0.0";$("kpiHitRate").textContent=rate+"%";$("kpiHits").textContent=adaptHits;$("kpiHitsOf").textContent="OF "+total+" ACCESSES";$("kpiFaults").textContent=adaptFaults;$("kpiSwitches").textContent=switchLog.length;}
+  function updateStatus(page,isHit,pattern){$("stStep").textContent=stepIdx+" / "+stream.length;$("stPage").textContent="P"+page;$("stBadge").textContent=isHit?"HIT":"FAULT";$("stBadge").className="tag "+(isHit?"tag-hit":"tag-miss");$("stPolicy").textContent=activePolName;$("stPattern").textContent=pattern;}
+
+  function prependAudit(sw){const el=document.createElement("div");el.className="audit-entry";el.innerHTML='<span class="ae-step">'+sw.step+'</span><div><div class="ae-change">'+sw.from+' &rarr; '+sw.to+'</div><div class="ae-reason">'+sw.pattern+' &mdash; '+sw.reason+'</div></div>';const log=$("auditScroll");log.querySelector(".ae-placeholder")?.remove();log.prepend(el);}
+
+  function renderInspector(i){const ev=history[i];if(!ev){["inspPage","inspResult","inspPolicy","inspEvicted"].forEach(id=>$(id).textContent="--");$("inspFrames").innerHTML="";return;}$("inspPage").textContent="P"+ev.page;$("inspResult").textContent=ev.isHit?"HIT":"FAULT";$("inspPolicy").textContent=ev.policy;$("inspEvicted").textContent=ev.evicted!==null?"P"+ev.evicted:"NONE";$("inspFrames").innerHTML=ev.frames.map((p,idx)=>{let cls="frame-box";if(p!==null)cls+=" f-full";if(p===ev.page&&ev.isHit)cls+=" f-hit";if(p===ev.page&&!ev.isHit)cls+=" f-miss";return'<div class="'+cls+'"><div class="frame-box-id">F'+idx+'</div><div class="frame-box-val">'+(p!==null?p:"--")+'</div></div>';}).join("");}
+
+  function computeBenchmarks(){const s=stream,f=numFrames;benchData=[{name:"Optimal (MIN)",type:"theory",...simulate(new Optimal(s),s,f)},{name:"Adaptive",type:"adapt",hits:adaptHits,faults:adaptFaults,total:adaptHits+adaptFaults,rate:"--"},{name:"ARC",type:"static",...simulate(new ARC(f),s,f)},{name:"LFU",type:"static",...simulate(new LFU(),s,f)},{name:"LRU",type:"static",...simulate(new LRU(),s,f)},{name:"Clock",type:"static",...simulate(new Clock(),s,f)},{name:"FIFO",type:"static",...simulate(new FIFO(),s,f)}];renderLeaderboard();renderOverview();renderBeladyCard();}
+  function updateBenchAdaptive(){const total=adaptHits+adaptFaults;const r=benchData.find(x=>x.name==="Adaptive");if(r){r.hits=adaptHits;r.faults=adaptFaults;r.total=total;r.rate=total?(adaptHits/total*100).toFixed(1):"0.0";}renderLeaderboard();renderOverview();}
+
+  function renderLeaderboard(){const sorted=[...benchData].sort((a,b)=>parseFloat(b.rate)-parseFloat(a.rate));const tL={adapt:"Adaptive",static:"Static",theory:"Theoretical"};const tC={adapt:"tp-adapt",static:"tp-static",theory:"tp-theory"};const bC={adapt:"",static:"",theory:"theory"};$("leaderTbody").innerHTML=sorted.map(r=>'<tr class="'+(r.type==="adapt"?"row-adaptive":"")+'"><td style="font-weight:700;">'+r.name+'</td><td><span class="type-pill '+tC[r.type]+'">'+tL[r.type]+'</span></td><td>'+r.hits+'</td><td>'+r.faults+'</td><td style="font-weight:700;">'+r.rate+'%</td><td><div class="bar-outer"><div class="bar-inner '+bC[r.type]+'" style="width:'+(parseFloat(r.rate)||0)+'%"></div></div></td></tr>').join("");}
+
+  function renderOverview(){const sorted=[...benchData].sort((a,b)=>parseFloat(b.rate)-parseFloat(a.rate));$("overviewRows").innerHTML=sorted.map(r=>'<div class="ov-row"><span class="ov-label">'+r.name+'</span><div class="bar-outer"><div class="bar-inner '+(r.type==="theory"?"theory":"")+'" style="width:'+(parseFloat(r.rate)||0)+'%;height:100%"></div></div><span class="ov-pct">'+r.rate+'%</span></div>').join("");}
+
+  function renderBeladyCard(){const bs=Gen.belady(),f3=simulate(new FIFO(),bs,3),f4=simulate(new FIFO(),bs,4),l3=simulate(new LRU(),bs,3),l4=simulate(new LRU(),bs,4);$("belady3f").textContent=f3.faults+" FAULTS / "+f3.rate+"%";$("belady4f").textContent=f4.faults+" FAULTS / "+f4.rate+"% (ANOMALY)";$("lru3f").textContent=l3.faults+" FAULTS / "+l3.rate+"%";$("lru4f").textContent=l4.faults+" FAULTS / "+l4.rate+"%";}
+
+  $("tabRow").addEventListener("click",e=>{const btn=e.target.closest(".wk-tab");if(!btn)return;document.querySelectorAll(".wk-tab").forEach(b=>b.classList.remove("active"));btn.classList.add("active");wkType=btn.dataset.wk;loadWorkload();});
+  $("btnPlay").addEventListener("click",()=>isPlaying?pause():play());
+  $("btnStep").addEventListener("click",step);
+  $("btnReset").addEventListener("click",resetSim);
+  $("sliderFrames").addEventListener("input",e=>{numFrames=+e.target.value;$("lblFrames").textContent=numFrames;loadWorkload();});
+  $("sliderSpeed").addEventListener("input",e=>{const v=+e.target.value;speed=[700,400,220,90,25][v-1];$("lblSpeed").textContent=["SLOWEST","SLOW","MEDIUM","FAST","FASTEST"][v-1];if(isPlaying){clearInterval(timer);timer=setInterval(()=>{if(stepIdx>=stream.length)pause();else step();},speed);}});
+  $("inspSlider").addEventListener("input",e=>{const i=+e.target.value;$("inspStepLbl").textContent=i;renderInspector(i);});
+
+  loadWorkload();
+  </script>
+</body>
+</html>

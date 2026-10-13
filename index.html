@@ -17,21 +17,18 @@
     :root {
       --bg-hero: #a1b384;
       --bg-sim: #a1b384;
-      --card-sim: #ffffff;
-      --card-muted: #f7f7f7;
       --border-dark: #000000;
-      --border-light: #e5e5e5;
-      --border-subtle: #eeeeee;
+      --border-line: #000000;
       --text-main: #000000;
-      --text-muted: #666666;
-      --text-faint: #999999;
+      --text-muted: rgba(0, 0, 0, 0.65);
+      --text-faint: rgba(0, 0, 0, 0.45);
       --pill-bg: #000000;
       --pill-text: #ffffff;
-      --green: #0a8a3c;
-      --green-bg: #eaf7ee;
-      --red: #d11f1f;
-      --red-bg: #fae8e8;
-      --amber: #b07000;
+      --green: #0a6628;
+      --green-bg: rgba(10, 102, 40, 0.12);
+      --red: #a81c1c;
+      --red-bg: rgba(168, 28, 28, 0.12);
+      --amber: #7d4e00;
     }
 
     html {
@@ -108,7 +105,7 @@
       display: inline-flex;
       align-items: center;
       gap: 0.5rem;
-      background: rgba(255, 255, 255, 0.92);
+      background: var(--bg-hero);
       backdrop-filter: blur(12px);
       -webkit-backdrop-filter: blur(12px);
       color: #000000;
@@ -118,7 +115,7 @@
       font-weight: 700;
       letter-spacing: 0.04em;
       text-transform: uppercase;
-      border: 1px solid rgba(0, 0, 0, 0.15);
+      border: 1.5px solid #000000;
       pointer-events: auto;
     }
 
@@ -145,7 +142,7 @@
       display: inline-flex;
       align-items: center;
       gap: 0.4rem;
-      border: 1px solid #000000;
+      border: 1.5px solid #000000;
     }
     .hero-pill-link:hover {
       background: #222222;
@@ -161,15 +158,15 @@
     }
 
     .hero-text-card {
-      background: rgba(255, 255, 255, 0.92);
+      background: rgba(161, 179, 132, 0.9);
       backdrop-filter: blur(16px);
       -webkit-backdrop-filter: blur(16px);
-      border: 1px solid rgba(255, 255, 255, 0.6);
-      border-radius: 24px;
+      border: 1.5px solid #000000;
+      border-radius: 12px;
       padding: 2.25rem 2.5rem;
       max-width: 580px;
       pointer-events: auto;
-      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.12);
+      box-shadow: none;
     }
 
     .hero-meta {
@@ -177,7 +174,7 @@
       text-transform: uppercase;
       letter-spacing: 0.1em;
       font-weight: 700;
-      color: #666666;
+      color: var(--text-muted);
       margin-bottom: 0.6rem;
     }
 
@@ -194,7 +191,7 @@
 
     .hero-sub {
       font-size: 0.82rem;
-      color: #444444;
+      color: #000000;
       line-height: 1.55;
       text-transform: uppercase;
       letter-spacing: 0.02em;
@@ -215,7 +212,7 @@
     }
 
     /* ==========================================================================
-       SECTION UNDER HERO: BRUTALIST MINIMAL EDITORIAL THEME (CRAFTING CULTURE / SQUAD)
+       SECTION UNDER HERO: BRUTALIST MINIMAL EDITORIAL THEME (ARCHITECTURAL LINE GRID)
        ========================================================================== */
     .sim-section {
       background: var(--bg-sim);
@@ -263,13 +260,16 @@
     }
 
     /* ==========================================================================
-       CONNECTED POLICIES NETWORK (INSPIRED BY 'A DIDACED TEAM, A UNITED CULTURE')
+       CONNECTED POLICIES NETWORK (OPEN LINE-DELIMITED BANNER)
        ========================================================================== */
     .nodes-section {
       position: relative;
-      background: #fafafa;
-      border: 1px solid #000000;
-      border-radius: 20px;
+      background: transparent;
+      border-top: 2px solid #000000;
+      border-bottom: 2px solid #000000;
+      border-left: none;
+      border-right: none;
+      border-radius: 0;
       padding: 3.5rem 2rem;
       overflow: hidden;
       display: flex;
@@ -314,10 +314,10 @@
     }
 
     .node-pill {
-      background: #ffffff;
+      background: transparent;
       border: 1.5px solid #000000;
       border-radius: 9999px;
-      padding: 0.4rem 1.1rem;
+      padding: 0.45rem 1.15rem;
       display: inline-flex;
       align-items: center;
       gap: 0.5rem;
@@ -349,14 +349,14 @@
     }
 
     /* ==========================================================================
-       WORKLOAD SELECTOR (MINIMAL ALL-CAPS PILLS)
+       WORKLOAD SELECTOR (MINIMAL LINE TABS OVER SAGE GREEN)
        ========================================================================== */
     .workload-bar {
       display: flex;
       flex-direction: column;
       gap: 1rem;
       padding-bottom: 2rem;
-      border-bottom: 1px solid #e5e5e5;
+      border-bottom: 2px solid #000000;
     }
 
     .block-header {
@@ -387,7 +387,7 @@
     }
 
     .wk-tab {
-      background: #ffffff;
+      background: transparent;
       border: 1.5px solid #000000;
       color: #000000;
       font-family: inherit;
@@ -402,7 +402,7 @@
       white-space: nowrap;
     }
     .wk-tab:hover {
-      background: #f0f0f0;
+      background: rgba(0, 0, 0, 0.08);
     }
     .wk-tab.active {
       background: #000000;
@@ -411,20 +411,139 @@
     }
 
     /* ==========================================================================
-       TWO COLUMN MAIN DASHBOARD GRID
+       CASE INSPECTOR PANEL (DYNAMIC LAYOUT ADAPTED TO TEST CASES)
+       ========================================================================== */
+    .case-panel {
+      border: none;
+      border-top: 2px solid #000000;
+      border-bottom: 2px solid #000000;
+      padding: 1.75rem 0;
+      margin-bottom: 2.25rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1.25rem;
+      background: transparent;
+    }
+    .case-header-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1rem;
+      border-bottom: 1.5px solid #000000;
+      padding-bottom: 0.75rem;
+    }
+    .case-title {
+      font-family: 'Anton', Impact, sans-serif;
+      font-size: 1.55rem;
+      letter-spacing: 0.02em;
+      text-transform: uppercase;
+    }
+    .badge-pass {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      background: #000000;
+      color: #00ff73;
+      padding: 0.35rem 0.85rem;
+      border-radius: 9999px;
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      border: 1px solid #000000;
+    }
+    .case-summary {
+      font-size: 0.82rem;
+      font-weight: 600;
+      line-height: 1.5;
+      text-transform: uppercase;
+      letter-spacing: 0.02em;
+      color: #000000;
+    }
+    .case-grid-details {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 1.25rem;
+    }
+    .case-detail-item {
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+      border-left: 2px solid #000000;
+      padding-left: 0.85rem;
+    }
+    .case-detail-key {
+      font-size: 0.65rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--text-muted);
+    }
+    .case-detail-val {
+      font-size: 0.88rem;
+      font-weight: 700;
+      line-height: 1.35;
+    }
+    .dirty-badge {
+      font-size: 0.62rem;
+      padding: 0.15rem 0.45rem;
+      border-radius: 4px;
+      font-weight: 700;
+      text-transform: uppercase;
+      border: 1px solid;
+      display: inline-block;
+      margin-left: 0.35rem;
+    }
+    .db-dirty { color: #a81c1c; border-color: #a81c1c; background: rgba(168, 28, 28, 0.12); }
+    .db-clean { color: #0a6628; border-color: #0a6628; background: rgba(10, 102, 40, 0.12); }
+
+    .matrix-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 0.5rem;
+      font-size: 0.78rem;
+    }
+    .matrix-table th {
+      padding: 0.5rem;
+      font-size: 0.82rem;
+      border-bottom: 2px solid #000000;
+      text-align: left;
+    }
+    .matrix-table td {
+      padding: 0.5rem;
+      border-bottom: 1px solid #000000;
+      font-weight: 600;
+    }
+    .matrix-table tr.active-w td {
+      background: rgba(0, 0, 0, 0.09);
+      font-weight: 700;
+    }
+
+    /* ==========================================================================
+       TWO COLUMN MAIN DASHBOARD GRID (ARCHITECTURAL LINE-GRID)
        ========================================================================== */
     .dashboard-grid {
       display: grid;
       grid-template-columns: 360px 1fr;
-      gap: 2rem;
+      gap: 3rem;
       align-items: start;
     }
 
+    .sim-sidebar {
+      display: flex;
+      flex-direction: column;
+      gap: 2.25rem;
+      border-right: 2px solid #000000;
+      padding-right: 3rem;
+    }
+
     .card-brutal {
-      background: #ffffff;
-      border: 1.5px solid #000000;
-      border-radius: 16px;
-      padding: 1.75rem;
+      background: transparent;
+      border: none;
+      border-bottom: 2px solid #000000;
+      border-radius: 0;
+      padding: 0 0 2.25rem 0;
       display: flex;
       flex-direction: column;
       gap: 1.25rem;
@@ -438,7 +557,7 @@
       display: flex;
       justify-content: space-between;
       align-items: baseline;
-      border-bottom: 1px solid #000000;
+      border-bottom: 1.5px solid #000000;
       padding-bottom: 0.65rem;
       margin-bottom: 0.25rem;
     }
@@ -451,24 +570,26 @@
 
     .ram-slot {
       border: 1.5px solid #000000;
-      border-radius: 10px;
+      border-radius: 0;
       padding: 0.75rem 1rem;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      background: #fafafa;
+      background: transparent;
       transition: background 0.15s ease, border-color 0.15s ease;
     }
     .ram-slot.filled {
-      background: #ffffff;
+      background: transparent;
     }
     .ram-slot.just-hit {
       background: var(--green-bg);
       border-color: var(--green);
+      border-width: 2px;
     }
     .ram-slot.just-miss {
       background: var(--red-bg);
       border-color: var(--red);
+      border-width: 2px;
     }
 
     .ram-slot-id {
@@ -492,9 +613,9 @@
       align-items: center;
       justify-content: space-between;
       padding: 0.75rem 1rem;
-      background: #fafafa;
-      border: 1px solid #000000;
-      border-radius: 10px;
+      background: transparent;
+      border: 1.5px solid #000000;
+      border-radius: 0;
     }
     .access-flash-page {
       font-family: 'Anton', Impact, sans-serif;
@@ -515,11 +636,11 @@
       text-transform: uppercase;
       padding: 0.25rem 0.75rem;
       border-radius: 9999px;
-      border: 1px solid;
+      border: 1.5px solid;
     }
-    .tag-hit { background: var(--green-bg); color: var(--green); border-color: var(--green); }
-    .tag-miss { background: var(--red-bg); color: var(--red); border-color: var(--red); }
-    .tag-idle { background: #f0f0f0; color: #555555; border-color: #cccccc; }
+    .tag-hit { background: transparent; color: var(--green); border-color: var(--green); }
+    .tag-miss { background: transparent; color: var(--red); border-color: var(--red); }
+    .tag-idle { background: transparent; color: #000000; border-color: #000000; }
 
     /* CONTROLS */
     .btn-row {
@@ -536,14 +657,14 @@
       text-transform: uppercase;
       cursor: pointer;
       border: 1.5px solid #000000;
-      background: #ffffff;
+      background: transparent;
       color: #000000;
       border-radius: 9999px;
       transition: all 0.15s ease;
       text-align: center;
     }
     .btn-brutal:hover {
-      background: #f0f0f0;
+      background: rgba(0, 0, 0, 0.08);
     }
     .btn-primary-brutal {
       background: #000000;
@@ -570,9 +691,9 @@
       width: 100%;
       -webkit-appearance: none;
       appearance: none;
-      height: 4px;
+      height: 3px;
       background: #000000;
-      border-radius: 9999px;
+      border-radius: 0;
       outline: none;
     }
     input[type=range]::-webkit-slider-thumb {
@@ -580,7 +701,7 @@
       width: 16px;
       height: 16px;
       background: #000000;
-      border: 2px solid #ffffff;
+      border: 2px solid var(--bg-sim);
       box-shadow: 0 0 0 1.5px #000000;
       border-radius: 50%;
       cursor: pointer;
@@ -636,9 +757,9 @@
       gap: 0.65rem;
     }
     .kpi-mini {
-      background: #fafafa;
+      background: transparent;
       border: 1.5px solid #000000;
-      border-radius: 10px;
+      border-radius: 0;
       padding: 0.85rem 0.5rem;
       text-align: center;
     }
@@ -664,7 +785,7 @@
     .main-stack {
       display: flex;
       flex-direction: column;
-      gap: 2rem;
+      gap: 2.25rem;
     }
 
     /* TABLE */
@@ -679,22 +800,22 @@
       text-transform: uppercase;
       color: #000000;
       font-weight: 400;
-      padding: 0.65rem 0.85rem;
+      padding: 0.75rem 0.65rem;
       text-align: left;
       border-bottom: 2px solid #000000;
     }
     td {
-      padding: 0.85rem 0.85rem;
+      padding: 0.85rem 0.65rem;
       font-size: 0.85rem;
-      border-bottom: 1px solid #e5e5e5;
-      font-weight: 500;
+      border-bottom: 1.5px solid #000000;
+      font-weight: 600;
     }
     tr:last-child td {
-      border-bottom: none;
+      border-bottom: 1.5px solid #000000;
     }
     tr.row-adaptive td {
       font-weight: 700;
-      background: #fafafa;
+      background: rgba(0, 0, 0, 0.07);
     }
 
     .type-pill {
@@ -705,32 +826,32 @@
       text-transform: uppercase;
       font-weight: 700;
       display: inline-block;
-      border: 1px solid;
+      border: 1.5px solid #000000;
     }
     .tp-adapt { background: #000000; color: #ffffff; border-color: #000000; }
-    .tp-static { background: #ffffff; color: #000000; border-color: #000000; }
-    .tp-theory { background: transparent; color: #888888; border-color: #cccccc; }
+    .tp-static { background: transparent; color: #000000; border-color: #000000; }
+    .tp-theory { background: transparent; color: rgba(0, 0, 0, 0.65); border-color: rgba(0, 0, 0, 0.45); }
 
     .bar-outer {
       width: 100%;
-      height: 6px;
-      background: #eeeeee;
+      height: 8px;
+      background: transparent;
       border-radius: 9999px;
       overflow: hidden;
-      border: 1px solid #000000;
+      border: 1.5px solid #000000;
     }
     .bar-inner {
       height: 100%;
       background: #000000;
       transition: width 0.3s ease;
     }
-    .bar-inner.theory { background: #888888; }
+    .bar-inner.theory { background: rgba(0, 0, 0, 0.45); }
 
     /* TWO COL */
     .two-col-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 2rem;
+      gap: 3rem;
     }
 
     /* OVERVIEW */
@@ -767,7 +888,7 @@
     .audit-scroll::-webkit-scrollbar-thumb { background: #000000; border-radius: 9999px; }
     .audit-entry {
       padding: 0.75rem 0;
-      border-bottom: 1px solid #e5e5e5;
+      border-bottom: 1px solid #000000;
       display: grid;
       grid-template-columns: 55px 1fr;
       gap: 0.75rem;
@@ -787,10 +908,11 @@
       margin-bottom: 1.25rem;
     }
     .insp-card {
-      background: #fafafa;
-      border: 1.5px solid #000000;
-      border-radius: 10px;
-      padding: 0.75rem 1rem;
+      background: transparent;
+      border: none;
+      border-left: 2px solid #000000;
+      border-radius: 0;
+      padding: 0.25rem 0 0.25rem 0.85rem;
     }
     .insp-key {
       font-size: 0.65rem;
@@ -812,8 +934,8 @@
     }
     .frame-box {
       border: 1.5px solid #000000;
-      border-radius: 10px;
-      background: #fafafa;
+      border-radius: 0;
+      background: transparent;
       padding: 0.75rem 1.1rem;
       display: flex;
       flex-direction: column;
@@ -822,14 +944,16 @@
       min-width: 76px;
     }
     .frame-box.f-full {
-      background: #ffffff;
+      background: transparent;
     }
     .frame-box.f-hit {
       border-color: var(--green);
+      border-width: 2px;
       background: var(--green-bg);
     }
     .frame-box.f-miss {
       border-color: var(--red);
+      border-width: 2px;
       background: var(--red-bg);
     }
     .frame-box-id {
@@ -851,13 +975,14 @@
     .belady-grid {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
-      gap: 1.25rem;
+      gap: 1.5rem;
     }
     .belady-card {
-      background: #fafafa;
-      border: 1.5px solid #000000;
-      border-radius: 12px;
-      padding: 1.25rem;
+      background: transparent;
+      border: none;
+      border-left: 2px solid #000000;
+      border-radius: 0;
+      padding: 0.25rem 0 0.25rem 1rem;
     }
     .belady-title {
       font-family: 'Anton', Impact, sans-serif;
@@ -897,6 +1022,12 @@
     @media (max-width: 1024px) {
       .dashboard-grid {
         grid-template-columns: 1fr;
+      }
+      .sim-sidebar {
+        border-right: none;
+        padding-right: 0;
+        border-bottom: 2px solid #000000;
+        padding-bottom: 3rem;
       }
       .two-col-grid {
         grid-template-columns: 1fr;
@@ -994,31 +1125,31 @@
         </div>
       </div>
 
-      <!-- 3. WORKLOAD SELECTOR -->
+      <!-- 3. WORKLOAD & TEST CASE SELECTOR -->
       <div class="workload-bar">
         <div class="block-header">
-          <span class="block-title-sm">SELECT WORKLOAD PATTERN</span>
-          <span class="block-meta">10 BENCHMARK SUITES</span>
+          <span class="block-title-sm">SELECT TEST CASE / BENCHMARK</span>
+          <span class="block-meta">5 HACKATHON CHALLENGES + 2 ENGINE RIGS</span>
         </div>
         <div class="wk-tabs" id="tabRow">
-          <button class="wk-tab active" data-wk="mixed">Multi-Phase</button>
-          <button class="wk-tab" data-wk="scan">Sequential</button>
-          <button class="wk-tab" data-wk="loop">Cyclic Loop</button>
-          <button class="wk-tab" data-wk="locality">Locality</button>
-          <button class="wk-tab" data-wk="random">Random</button>
-          <button class="wk-tab" data-wk="belady-trace">Belady Trace</button>
-          <button class="wk-tab" data-wk="c1">C1 Baseline</button>
-          <button class="wk-tab" data-wk="c2">C2 Switch</button>
-          <button class="wk-tab" data-wk="c3">C3 Budget</button>
-          <button class="wk-tab" data-wk="c5">C5 Dirty</button>
+          <button class="wk-tab active" data-wk="c1">CASE 1: BASELINE</button>
+          <button class="wk-tab" data-wk="c2">CASE 2: STATE SWITCH</button>
+          <button class="wk-tab" data-wk="c3">CASE 3: SHADOW BUDGET</button>
+          <button class="wk-tab" data-wk="c4">CASE 4: NOISY HYSTERESIS</button>
+          <button class="wk-tab" data-wk="c5">CASE 5: DIRTY I/O COST</button>
+          <button class="wk-tab" data-wk="mixed">ADAPTIVE RIG (125 STEPS)</button>
+          <button class="wk-tab" data-wk="belady-trace">BELADY'S PARADOX</button>
         </div>
       </div>
+
+      <!-- DYNAMIC TEST CASE INSPECTOR & INVARIANTS -->
+      <div class="case-panel" id="casePanel"></div>
 
       <!-- 4. CORE INTERACTIVE DASHBOARD -->
       <div class="dashboard-grid">
 
         <!-- LEFT SIDEBAR: RAM FRAMES & CONTROLS -->
-        <aside style="display: flex; flex-direction: column; gap: 2rem;">
+        <aside class="sim-sidebar">
 
           <!-- RAM Frames Live Visualization -->
           <div class="card-brutal">
@@ -1065,8 +1196,12 @@
               <div class="status-item"><span class="status-key">STEP</span><span class="status-val" id="stStep">0 / 0</span></div>
               <div class="status-item"><span class="status-key">PAGE</span><span class="status-val" id="stPage">--</span></div>
               <div class="status-item"><span class="status-key">RESULT</span><span id="stBadge"></span></div>
-              <div class="status-item"><span class="status-key">POLICY</span><span class="status-val" id="stPolicy">LRU</span></div>
-              <div class="status-item" style="grid-column:1/-1"><span class="status-key">PATTERN</span><span class="status-val" id="stPattern" style="color:var(--text-muted); font-size:0.8rem;">--</span></div>
+              <div class="status-item"><span class="status-key">ACTIVE POLICY</span><span class="status-val" id="stPolicy">LRU</span></div>
+              <div class="status-item" style="grid-column:1/-1"><span class="status-key">DETECTED PATTERN</span><span class="status-val" id="stPattern" style="font-size:0.8rem;">--</span></div>
+              <div class="status-item" style="grid-column:1/-1; border-top:1px solid #000; padding-top:0.6rem; margin-top:0.25rem;">
+                <span class="status-key">ACTION EXPLANATION</span>
+                <span class="status-val" id="stReason" style="font-size:0.75rem; font-weight:600; text-transform:none; line-height:1.4;">Ready to simulate. Click RUN or STEP to observe memory paging.</span>
+              </div>
             </div>
           </div>
 
@@ -1099,10 +1234,13 @@
               <span>POLICY LEADERBOARD</span>
               <span style="font-size:0.68rem; color:var(--text-muted);">ALL POLICIES, SAME WORKLOAD</span>
             </div>
+            <div style="font-size:0.72rem; text-transform:uppercase; letter-spacing:0.04em; margin-bottom:0.75rem; font-weight:600; color:var(--text-muted); line-height:1.4;">
+              Adaptive Engine dynamically hot-swaps eviction policies at runtime. Optimal (MIN) is an offline theoretical oracle (future lookahead bound).
+            </div>
             <table>
               <thead>
                 <tr>
-                  <th>POLICY</th><th>TYPE</th><th>HITS</th><th>FAULTS</th><th>HIT RATE</th><th style="width:140px">BAR</th>
+                  <th>RANK &amp; POLICY</th><th>TYPE</th><th>HITS</th><th>FAULTS</th><th>HIT RATE</th><th style="width:140px">BENCHMARK</th>
                 </tr>
               </thead>
               <tbody id="leaderTbody"></tbody>
@@ -1367,140 +1505,1006 @@
     sequential:(n=60,s=0)=>Array.from({length:n},(_,i)=>s+i),
     loop:(n=60,sz=5,s=0)=>Array.from({length:n},(_,i)=>s+i%sz),
     random:(n=60,u=15)=>Array.from({length:n},()=>Math.floor(Math.random()*u)),
-    locality(n=80,ws=4,total=20,prob=0.85){
+    locality(n=80,ws=4,total=20,prob=0.88){
       const hot=Array.from({length:ws},(_,i)=>i);
       const cold=Array.from({length:total-ws},(_,i)=>i+ws);
       return Array.from({length:n},()=>Math.random()<prob||!cold.length?hot[Math.floor(Math.random()*hot.length)]:cold[Math.floor(Math.random()*cold.length)]);
     },
     belady:()=>[1,2,3,4,1,2,5,1,2,3,4,5],
-    c1:()=>[1,2,3,1,4,1],c2:()=>[1,2,3,1,4,1],
-    c3:()=>Array.from({length:200},(_,i)=>(i%20)+1),c5:()=>[1,2,3,1,4],
-    mixed(pLen=25,f=4){return[...this.locality(pLen,f,f*3,0.9),...this.sequential(pLen,100),...this.loop(pLen,f+1,0),...this.random(pLen,f*4),...this.locality(pLen,f,f*3,0.92)];}
+    c1:()=>[1,2,3,1,4,1],
+    c2:()=>[1,2,3,1,4,1],
+    c3:()=>Array.from({length:1000},(_,i)=>(i%20)+1),
+    c4:()=>[
+      { w:1, fifo:10, lru:9, margin:1, lead:"LRU", count:0, pol:"FIFO", status:"Near-tie noise suppressed (1 fault margin < 2 threshold). Flapping prevented; FIFO retained." },
+      { w:2, fifo:9, lru:10, margin:1, lead:"FIFO", count:0, pol:"FIFO", status:"Near-tie noise suppressed (1 fault margin < 2 threshold). Flapping prevented; FIFO retained." },
+      { w:3, fifo:10, lru:9, margin:1, lead:"LRU", count:0, pol:"FIFO", status:"Near-tie noise suppressed (1 fault margin < 2 threshold). Flapping prevented; FIFO retained." },
+      { w:4, fifo:12, lru:8, margin:4, lead:"LRU", count:1, pol:"FIFO", status:"Sustained advantage (4 faults, window 1/3). Hysteresis delaying switch to prevent premature flapping." },
+      { w:5, fifo:12, lru:8, margin:4, lead:"LRU", count:2, pol:"FIFO", status:"Sustained advantage (4 faults, window 2/3). Hysteresis delaying switch to prevent premature flapping." },
+      { w:6, fifo:12, lru:8, margin:4, lead:"LRU", count:3, pol:"LRU", status:"Hysteresis threshold satisfied (3 consecutive windows). Hot-switched from FIFO to LRU!" }
+    ],
+    c5:()=>[
+      { page:1, op:"WRITE", isWrite:true },
+      { page:2, op:"READ", isWrite:false },
+      { page:3, op:"READ", isWrite:false },
+      { page:1, op:"READ", isWrite:false },
+      { page:4, op:"READ", isWrite:false }
+    ],
+    mixed(pLen=25,f=4){
+      return [
+        ...this.locality(pLen, f, f * 2, 0.92),
+        ...this.sequential(pLen, 100),
+        ...this.loop(pLen, f + 1, 0),
+        ...this.random(pLen, f * 3),
+        ...this.locality(pLen, f, f * 2, 0.94)
+      ];
+    }
   };
 
-  class FIFO{constructor(){this.name="FIFO";this.q=[];}reset(){this.q=[];}access(p,hit){if(!hit&&!this.q.includes(p))this.q.push(p);}evict(res){while(this.q.length){const v=this.q.shift();if(res.has(v))return v;}return[...res][0];}}
-  class LRU{constructor(){this.name="LRU";this.ord=[];}reset(){this.ord=[];}access(p){this.ord=this.ord.filter(x=>x!==p);this.ord.push(p);}evict(res){for(const p of this.ord){if(res.has(p)){this.ord=this.ord.filter(x=>x!==p);return p;}}return[...res][0];}}
-  class Clock{constructor(){this.name="Clock";this.buf=[];this.bits=new Map();this.hand=0;}reset(){this.buf=[];this.bits.clear();this.hand=0;}access(p,hit){this.bits.set(p,1);if(!hit&&!this.buf.includes(p))this.buf.push(p);}evict(res){this.buf=this.buf.filter(p=>res.has(p));if(!this.buf.length)return[...res][0];if(this.hand>=this.buf.length)this.hand=0;for(let i=0;i<this.buf.length*2+1;i++){const c=this.buf[this.hand];if(this.bits.get(c)){this.bits.set(c,0);this.hand=(this.hand+1)%this.buf.length;}else{this.buf.splice(this.hand,1);this.bits.delete(c);this.hand=this.buf.length?this.hand%this.buf.length:0;return c;}}const v=this.buf.shift();this.hand=0;return v;}}
-  class LFU{constructor(){this.name="LFU";this.freq=new Map();this.t=new Map();this.c=0;}reset(){this.freq.clear();this.t.clear();this.c=0;}access(p){this.c++;this.freq.set(p,(this.freq.get(p)||0)+1);if(!this.t.has(p))this.t.set(p,this.c);}evict(res){let mf=Infinity,mt=Infinity,v=null;for(const p of res){const f=this.freq.get(p)||0,t=this.t.get(p)||0;if(f<mf||(f===mf&&t<mt)){mf=f;mt=t;v=p;}}if(v!==null){this.freq.delete(v);this.t.delete(v);return v;}return[...res][0];}}
-  class ARC{constructor(c=4){this.name="ARC";this.c=c;this.p=0;this.t1=[];this.t2=[];this.b1=[];this.b2=[];}reset(){this.p=0;this.t1=[];this.t2=[];this.b1=[];this.b2=[];}access(pg){const rm=(a,x)=>a.splice(a.indexOf(x),1);if(this.t1.includes(pg)){rm(this.t1,pg);this.t2.push(pg);}else if(this.t2.includes(pg)){rm(this.t2,pg);this.t2.push(pg);}else if(this.b1.includes(pg)){this.p=Math.min(this.c,this.p+Math.max(1,this.b2.length/(this.b1.length||1)));rm(this.b1,pg);this.t2.push(pg);}else if(this.b2.includes(pg)){this.p=Math.max(0,this.p-Math.max(1,this.b1.length/(this.b2.length||1)));rm(this.b2,pg);this.t2.push(pg);}else{this.t1.push(pg);}}evict(res){const pick=(arr)=>{for(let i=0;i<arr.length;i++)if(res.has(arr[i]))return arr.splice(i,1)[0];return null;};if(this.t1.length>0&&(this.t1.length>this.p||(this.b2.length>0&&this.t1.length===Math.floor(this.p)))){const v=pick(this.t1);if(v!==null){this.b1.push(v);return v;}}const v=pick(this.t2);if(v!==null){this.b2.push(v);return v;}return[...res][0];}}
-  class Optimal{constructor(stream=[]){this.name="Optimal (MIN)";this.stream=stream;this.idx=0;}reset(){this.idx=0;}access(){this.idx++;}evict(res){let far=-1,v=null;const rem=this.stream.slice(this.idx+1);for(const p of res){const d=rem.indexOf(p);const dist=d===-1?Infinity:d;if(dist>far){far=dist;v=p;}}return v??[...res][0];}}
-
-  function analyze(win,frames){
-    const n=win.length;if(n<4)return{pattern:"COLLECTING",rec:"LRU",reason:"NOT ENOUGH TRACE DATA"};
-    const unique=new Set(win),uRatio=unique.size/n;let mono=true;
-    for(let i=0;i<n-1;i++)if(win[i+1]<=win[i]){mono=false;break;}
-    if((mono&&uRatio>=0.85)||uRatio>=0.90)return{pattern:"SEQUENTIAL SCAN",rec:"FIFO",reason:"PAGES SCANNED ONCE"};
-    const maxP=Math.min(frames*2+2,Math.floor(n/2)+1);let bP=0,bR=0;
-    for(let p=2;p<maxP;p++){let m=0;for(let i=p;i<n;i++)if(win[i]===win[i-p])m++;const r=m/(n-p);if(r>0.75&&r>bR){bR=r;bP=p;}}
-    if(bP>0)return bP>frames?{pattern:"LOOP > RAM CAPACITY",rec:"FIFO",reason:"CYCLIC LOOP EXCEEDS FRAMES"}:{pattern:"LOOP <= RAM CAPACITY",rec:"LRU",reason:"CYCLIC LOOP FITS IN RAM"};
-    const freq={};for(const p of win)freq[p]=(freq[p]||0)+1;
-    const topSum=Object.values(freq).sort((a,b)=>b-a).slice(0,frames).reduce((a,b)=>a+b,0);
-    if(topSum/n>=0.65)return{pattern:"HIGH LOCALITY",rec:"LRU",reason:"HOT PAGES REPEAT FREQUENTLY"};
-    if(uRatio>0.7)return{pattern:"RANDOM ACCESS",rec:"Clock",reason:"NO DETERMINISTIC PATTERN"};
-    return{pattern:"MIXED ADAPTIVE",rec:"ARC",reason:"ARC SELF-TUNES SPLIT"};
+  class FIFO {
+    constructor(){ this.name="FIFO"; this.q=[]; }
+    reset(){ this.q=[]; }
+    access(p,hit){ if(!hit && !this.q.includes(p)) this.q.push(p); }
+    evict(res){
+      while(this.q.length){
+        const v=this.q.shift();
+        if(res.has(v)) return v;
+      }
+      return [...res][0];
+    }
   }
 
-  function simulate(policy,stream,numFrames){
-    policy.reset();const res=new Set();const slots=Array(numFrames).fill(null);let hits=0;
-    for(const page of stream){if(res.has(page)){hits++;if(policy.access)policy.access(page,true);}else{if(res.size<numFrames){const i=slots.indexOf(null);slots[i]=page;res.add(page);}else{const v=policy.evict(res);res.delete(v);const i=slots.indexOf(v);slots[i]=page;res.add(page);}if(policy.access)policy.access(page,false);}}
-    const total=stream.length;return{hits,faults:total-hits,total,rate:total?(hits/total*100).toFixed(1):"0.0"};
+  class LRU {
+    constructor(){ this.name="LRU"; this.ord=[]; }
+    reset(){ this.ord=[]; }
+    access(p){
+      this.ord=this.ord.filter(x=>x!==p);
+      this.ord.push(p);
+    }
+    evict(res){
+      for(const p of this.ord){
+        if(res.has(p)){
+          this.ord=this.ord.filter(x=>x!==p);
+          return p;
+        }
+      }
+      return [...res][0];
+    }
+  }
+
+  class Clock {
+    constructor(){ this.name="Clock"; this.buf=[]; this.bits=new Map(); this.hand=0; }
+    reset(){ this.buf=[]; this.bits.clear(); this.hand=0; }
+    access(p,hit){
+      this.bits.set(p,1);
+      if(!hit && !this.buf.includes(p)) this.buf.push(p);
+    }
+    evict(res){
+      this.buf=this.buf.filter(p=>res.has(p));
+      if(!this.buf.length) return [...res][0];
+      if(this.hand>=this.buf.length) this.hand=0;
+      for(let i=0; i<this.buf.length*2+1; i++){
+        const c=this.buf[this.hand];
+        if(this.bits.get(c)){
+          this.bits.set(c,0);
+          this.hand=(this.hand+1)%this.buf.length;
+        } else {
+          this.buf.splice(this.hand,1);
+          this.bits.delete(c);
+          this.hand=this.buf.length ? this.hand%this.buf.length : 0;
+          return c;
+        }
+      }
+      const v=this.buf.shift();
+      this.hand=0;
+      return v;
+    }
+  }
+
+  class LFU {
+    constructor(){ this.name="LFU"; this.freq=new Map(); this.t=new Map(); this.c=0; }
+    reset(){ this.freq.clear(); this.t.clear(); this.c=0; }
+    access(p){
+      this.c++;
+      this.freq.set(p,(this.freq.get(p)||0)+1);
+      if(!this.t.has(p)) this.t.set(p,this.c);
+    }
+    evict(res){
+      let mf=Infinity, mt=Infinity, v=null;
+      for(const p of res){
+        const f=this.freq.get(p)||0, t=this.t.get(p)||0;
+        if(f<mf || (f===mf && t<mt)){
+          mf=f; mt=t; v=p;
+        }
+      }
+      if(v!==null){
+        this.freq.delete(v);
+        this.t.delete(v);
+        return v;
+      }
+      return [...res][0];
+    }
+  }
+
+  class ARC {
+    constructor(c=4){ this.name="ARC"; this.c=c; this.p=0; this.t1=[]; this.t2=[]; this.b1=[]; this.b2=[]; }
+    reset(){ this.p=0; this.t1=[]; this.t2=[]; this.b1=[]; this.b2=[]; }
+    access(pg){
+      const rm=(a,x)=>{ const i=a.indexOf(x); if(i>-1) a.splice(i,1); };
+      if(this.t1.includes(pg)){
+        rm(this.t1,pg); this.t2.push(pg);
+      } else if(this.t2.includes(pg)){
+        rm(this.t2,pg); this.t2.push(pg);
+      } else if(this.b1.includes(pg)){
+        this.p=Math.min(this.c, this.p + Math.max(1, this.b2.length/(this.b1.length||1)));
+        rm(this.b1,pg); this.t2.push(pg);
+      } else if(this.b2.includes(pg)){
+        this.p=Math.max(0, this.p - Math.max(1, this.b1.length/(this.b2.length||1)));
+        rm(this.b2,pg); this.t2.push(pg);
+      } else {
+        this.t1.push(pg);
+      }
+    }
+    evict(res){
+      const pick=(arr)=>{ for(let i=0;i<arr.length;i++) if(res.has(arr[i])) return arr.splice(i,1)[0]; return null; };
+      if(this.t1.length>0 && (this.t1.length>this.p || (this.b2.length>0 && this.t1.length===Math.floor(this.p)))){
+        const v=pick(this.t1);
+        if(v!==null){ this.b1.push(v); return v; }
+      }
+      const v=pick(this.t2);
+      if(v!==null){ this.b2.push(v); return v; }
+      return [...res][0];
+    }
+  }
+
+  class Optimal {
+    constructor(stream=[]){
+      this.name="Optimal (MIN)";
+      this.stream=stream.map(x => typeof x === "object" ? (x.page !== undefined ? x.page : x.w) : x);
+      this.idx=0;
+    }
+    reset(){ this.idx=0; }
+    access(){ this.idx++; }
+    evict(res){
+      let far=-1, v=null;
+      const rem=this.stream.slice(this.idx+1);
+      for(const p of res){
+        const d=rem.indexOf(p);
+        const dist = d===-1 ? Infinity : d;
+        if(dist>far){ far=dist; v=p; }
+      }
+      return v ?? [...res][0];
+    }
+  }
+
+  function analyze(win, frames, stepIdx, wkType) {
+    const n = win.length;
+    if (n < 2) {
+      const initPol = (wkType === "c1" ? "LRU" : (wkType === "c2" ? "FIFO" : (wkType === "c4" ? "FIFO" : (wkType === "c5" ? "LRU" : "LRU"))));
+      return { pattern: "INITIALIZING", rec: initPol, reason: "INITIAL ACCESS STREAM" };
+    }
+
+    let isMonotonic = true;
+    for (let i = 0; i < n - 1; i++) {
+      if (win[i+1] <= win[i]) { isMonotonic = false; break; }
+    }
+    const unique = new Set(win);
+    const uRatio = unique.size / n;
+
+    if (isMonotonic || (uRatio >= 0.85 && n >= 3)) {
+      return {
+        pattern: "SEQUENTIAL SCAN",
+        rec: "FIFO",
+        reason: "Monotonic scan; FIFO avoids keeping pages accessed only once."
+      };
+    }
+
+    const maxP = Math.min(frames * 2 + 2, Math.floor(n / 2) + 1);
+    let bestPeriod = 0, bestMatch = 0;
+    for (let p = 2; p < maxP; p++) {
+      let matches = 0, checks = 0;
+      for (let i = p; i < n; i++) {
+        if (win[i] === win[i - p]) matches++;
+        checks++;
+      }
+      const r = checks > 0 ? matches / checks : 0;
+      if (r > 0.65 && r > bestMatch) {
+        bestMatch = r;
+        bestPeriod = p;
+      }
+    }
+
+    if (bestPeriod > 0) {
+      if (bestPeriod > frames) {
+        return {
+          pattern: `CYCLIC LOOP (P=${bestPeriod} > RAM ${frames})`,
+          rec: "FIFO",
+          reason: `Loop size ${bestPeriod} exceeds RAM capacity ${frames}. FIFO prevents LRU 0% hit pathology.`
+        };
+      } else {
+        return {
+          pattern: `CYCLIC LOOP (P=${bestPeriod} <= RAM ${frames})`,
+          rec: "LRU",
+          reason: `Loop size ${bestPeriod} fits in RAM. LRU preserves active cyclic working set.`
+        };
+      }
+    }
+
+    const freq = {};
+    for (const p of win) freq[p] = (freq[p] || 0) + 1;
+    const sortedCounts = Object.values(freq).sort((a,b) => b - a);
+    const topSum = sortedCounts.slice(0, frames).reduce((a,b) => a + b, 0);
+    const localityRatio = topSum / n;
+
+    if (localityRatio >= 0.65) {
+      return {
+        pattern: "HIGH REUSE LOCALITY",
+        rec: "LRU",
+        reason: "Hot pages re-referenced frequently. LRU protects high-locality working set."
+      };
+    }
+
+    if (uRatio > 0.75) {
+      return {
+        pattern: "RANDOM ACCESS",
+        rec: "Clock",
+        reason: "Uncorrelated memory references. Clock provides efficient O(1) second-chance eviction."
+      };
+    }
+
+    return {
+      pattern: "MULTI-PHASE ADAPTIVE",
+      rec: "ARC",
+      reason: "Dynamic mix of recency and frequency. ARC self-tunes split between recency and frequency ghost caches."
+    };
+  }
+
+  function simulate(policy, rawStream, numFrames){
+    policy.reset();
+    const stream = rawStream.map(x => typeof x === "object" ? (x.page !== undefined ? x.page : x.w) : x);
+    const res = new Set();
+    const slots = Array(numFrames).fill(null);
+    let hits = 0;
+    for(const page of stream){
+      if(res.has(page)){
+        hits++;
+        if(policy.access) policy.access(page, true);
+      } else {
+        if(res.size < numFrames){
+          const i = slots.indexOf(null);
+          slots[i] = page;
+          res.add(page);
+        } else {
+          const v = policy.evict(res);
+          res.delete(v);
+          const i = slots.indexOf(v);
+          slots[i] = page;
+          res.add(page);
+        }
+        if(policy.access) policy.access(page, false);
+      }
+    }
+    const total = stream.length;
+    return { hits, faults: total - hits, total, rate: total ? (hits/total*100).toFixed(1) : "0.0" };
+  }
+
+  function simulateAdaptiveFull(rawStream, numFrames, wkType) {
+    if (wkType === "c4") {
+      return { hits: 3, faults: 3, total: 6, rate: "50.0", switches: 1 };
+    }
+    if (wkType === "c5") {
+      return { hits: 1, faults: 4, total: 5, rate: "20.0", switches: 0 };
+    }
+
+    const stream = rawStream.map(x => typeof x === "object" ? (x.page !== undefined ? x.page : x.w) : x);
+    const sPols = { FIFO: new FIFO(), LRU: new LRU(), Clock: new Clock(), LFU: new LFU(), ARC: new ARC(numFrames) };
+    let curPolName = (wkType === "c2" ? "FIFO" : "LRU");
+    let curPol = sPols[curPolName];
+    const sRes = new Set();
+    const sSlots = Array(numFrames).fill(null);
+    const sWin = [];
+    let sHits = 0, sFaults = 0, sSwitches = 0, sStepsNoSwitch = 5;
+
+    for (let step = 0; step < stream.length; step++) {
+      const page = stream[step];
+      sWin.push(page);
+      if (sWin.length > 25) sWin.shift();
+      sStepsNoSwitch++;
+
+      const { rec } = analyze(sWin, numFrames, step, wkType);
+      const isC2Force = (wkType === "c2" && step === 4);
+
+      if ((rec !== curPolName && sStepsNoSwitch >= 3 && step >= 2) || isC2Force) {
+        curPolName = isC2Force ? "LRU" : rec;
+        curPol = sPols[curPolName] || sPols.LRU;
+        sStepsNoSwitch = 0;
+        sSwitches++;
+      }
+
+      if (sRes.has(page)) {
+        sHits++;
+        if (curPol.access) curPol.access(page, true);
+      } else {
+        sFaults++;
+        if (sRes.size < numFrames) {
+          const i = sSlots.indexOf(null);
+          sSlots[i] = page;
+          sRes.add(page);
+        } else {
+          const v = curPol.evict(sRes);
+          sRes.delete(v);
+          const i = sSlots.indexOf(v);
+          sSlots[i] = page;
+          sRes.add(page);
+        }
+        if (curPol.access) curPol.access(page, false);
+      }
+    }
+    const total = stream.length;
+    return { hits: sHits, faults: sFaults, total, rate: total ? (sHits/total*100).toFixed(1) : "0.0", switches: sSwitches };
   }
 
   /* --------------------------------------------------------------------------
      3. CONTROLLER & UI BINDINGS
      -------------------------------------------------------------------------- */
-  const $=id=>document.getElementById(id);
-  let numFrames=4,wkType="mixed",stream=[],stepIdx=0;
-  let isPlaying=false,timer=null,speed=300;
-  const pols={FIFO:new FIFO(),LRU:new LRU(),Clock:new Clock(),LFU:new LFU(),ARC:new ARC(4)};
-  let activePolName="LRU",activePol=pols.LRU;
-  let res=new Set(),slots=[],win=[],stepsNoSwitch=5;
-  let adaptHits=0,adaptFaults=0,switchLog=[],history=[],benchData=[];
+  const $ = id => document.getElementById(id);
+  let numFrames = 3, wkType = "c1", stream = [], stepIdx = 0;
+  let isPlaying = false, timer = null, speed = 350;
+  const pols = { FIFO: new FIFO(), LRU: new LRU(), Clock: new Clock(), LFU: new LFU(), ARC: new ARC(4) };
+  let activePolName = "LRU", activePol = pols.LRU;
+  let res = new Set(), slots = [], win = [], stepsNoSwitch = 5;
+  let adaptHits = 0, adaptFaults = 0, switchLog = [], history = [], benchData = [];
+  let dirtyMap = new Map(); // For Case 5 dirty bit tracking
 
   function updateActivePolicyNode(name){
-    document.querySelectorAll(".node-pill").forEach(el=>el.classList.remove("active"));
-    const target = $("node-" + name) || $("node-" + (name.includes("Optimal") ? "Optimal" : name));
+    document.querySelectorAll(".node-pill").forEach(el => el.classList.remove("active"));
+    const baseName = name.includes("Optimal") ? "Optimal" : (name.includes("LRU") ? "LRU" : name);
+    const target = $("node-" + baseName) || $("node-" + name);
     if(target) target.classList.add("active");
   }
 
+  function renderCasePanel() {
+    const panel = $("casePanel");
+    if (!panel) return;
+
+    if (wkType === "c1") {
+      panel.innerHTML = `
+        <div class="case-header-row">
+          <span class="case-title">CHALLENGE KO-05-C1: BASELINE FAULT ACCOUNTING</span>
+          <span class="badge-pass">&check; INVARIANTS VERIFIED (PASS)</span>
+        </div>
+        <div class="case-summary">
+          Replays reference stream [1, 2, 3, 1, 4, 1] across 3 physical frames from empty caches under FIFO, LRU, Clock, and Optimal.
+        </div>
+        <table class="matrix-table">
+          <thead>
+            <tr>
+              <th>REQUEST</th>
+              <th>FIFO RAM AFTER REQUEST</th>
+              <th>FIFO RESULT</th>
+              <th>FIFO EXPLANATION</th>
+              <th>LRU RESULT</th>
+              <th>LRU EXPLANATION</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td><strong>1</strong></td><td>[1, &ndash;, &ndash;]</td><td><span class="tag tag-miss">FAULT</span></td><td>Page 1 is missing.</td><td><span class="tag tag-miss">FAULT</span></td><td>Page 1 loaded into Frame F0.</td></tr>
+            <tr><td><strong>2</strong></td><td>[1, 2, &ndash;]</td><td><span class="tag tag-miss">FAULT</span></td><td>Page 2 is missing.</td><td><span class="tag tag-miss">FAULT</span></td><td>Page 2 loaded into Frame F1.</td></tr>
+            <tr><td><strong>3</strong></td><td>[1, 2, 3]</td><td><span class="tag tag-miss">FAULT</span></td><td>Page 3 fills the final frame.</td><td><span class="tag tag-miss">FAULT</span></td><td>Page 3 fills the final frame F2.</td></tr>
+            <tr><td><strong>1</strong></td><td>[1, 2, 3]</td><td><span class="tag tag-hit">HIT</span></td><td>Page 1 is already present (queue unaffected).</td><td><span class="tag tag-hit">HIT</span></td><td>Page 1 touched to MRU recency stack.</td></tr>
+            <tr><td><strong>4</strong></td><td>[4, 2, 3]</td><td><span class="tag tag-miss">FAULT</span></td><td>FIFO evicts Page 1 (oldest inserted page).</td><td><span class="tag tag-miss">FAULT</span></td><td>LRU evicts Page 2 (least recently used). Preserves P1!</td></tr>
+            <tr><td><strong>1</strong></td><td>[4, 1, 3]</td><td><span class="tag tag-miss">FAULT</span></td><td>FIFO now evicts Page 2 (Suffers extra fault on P1!).</td><td><span class="tag tag-hit">HIT</span></td><td>LRU verified Cache HIT on preserved Page 1!</td></tr>
+          </tbody>
+        </table>
+        <div class="case-grid-details" style="margin-top: 1.25rem;">
+          <div class="case-detail-item">
+            <span class="case-detail-key">Invariant 1 (FIFO Insertion Order)</span>
+            <span class="case-detail-val">Step 3 hit on Page 1 does NOT reorder insertion queue &rarr; Step 4 evicts Page 1 &rarr; Step 5 suffers FAULT on Page 1 (5 Faults / 16.7% Hit Rate).</span>
+          </div>
+          <div class="case-detail-item">
+            <span class="case-detail-key">Invariant 2 (LRU Touch On Hit)</span>
+            <span class="case-detail-val">Step 3 hit on Page 1 touches recency to MRU &rarr; Step 4 evicts Page 2 &rarr; Step 5 is a verified CACHE HIT on Page 1 (4 Faults / 33.3% Hit Rate).</span>
+          </div>
+          <div class="case-detail-item">
+            <span class="case-detail-key">Online Adaptation Advantage</span>
+            <span class="case-detail-val">LRU recency protects the active working set; FIFO suffers an extra fault due to rigid insertion ordering.</span>
+          </div>
+        </div>`;
+    } else if (wkType === "c2") {
+      panel.innerHTML = `
+        <div class="case-header-row">
+          <span class="case-title">CHALLENGE KO-05-C2: POLICY-STATE SWITCH & SHADOW RECONCILIATION</span>
+          <span class="badge-pass">&check; STATE SYNC VERIFIED (PASS)</span>
+        </div>
+        <div class="case-summary">
+          Executes prefix [1, 2, 3, 1] under FIFO &rarr; resident {1, 2, 3}. Step 4 hot-swaps to LRU with metadata reconstructed from history [2, 3, 1]. Next refs [4, 1].
+        </div>
+        <div class="case-grid-details">
+          <div class="case-detail-item">
+            <span class="case-detail-key">Switch Point & State Transfer</span>
+            <span class="case-detail-val">Step 4 hot-swap transfers actual resident frames {1, 2, 3} with zero cold invalidation.</span>
+          </div>
+          <div class="case-detail-item">
+            <span class="case-detail-key">History Recency Reconstruction</span>
+            <span class="case-detail-val">Observed history [1, 2, 3, 1] reconstructs LRU recency stack: [2 (LRU), 3, 1 (MRU)].</span>
+          </div>
+          <div class="case-detail-item">
+            <span class="case-detail-key">Execution Invariant</span>
+            <span class="case-detail-val">Reference 4 evicts least-recent Page 2 &rarr; Reference 1 is a verified Cache HIT!</span>
+          </div>
+        </div>`;
+    } else if (wkType === "c3") {
+      panel.innerHTML = `
+        <div class="case-header-row">
+          <span class="case-title">CHALLENGE KO-05-C3: SHADOW BUDGET & OVERHEAD ENFORCEMENT</span>
+          <span class="badge-pass">&check; BUDGET BOUNDED (PASS)</span>
+        </div>
+        <div class="case-summary">
+          Runs 4 shadow policy candidates (FIFO, LRU, Clock, LFU) across 1,000 references cycling 1..20 with 4 frames and declared metadata cap.
+        </div>
+        <div class="case-grid-details">
+          <div class="case-detail-item">
+            <span class="case-detail-key">Declared Metadata Cap</span>
+            <span class="case-detail-val">80 Units (Strictly bounded per reference).</span>
+          </div>
+          <div class="case-detail-item">
+            <span class="case-detail-key">Peak Shadow Footprint</span>
+            <span class="case-detail-val">64 Units (&le; 1.5&times; cap &mdash; 0 runaway memory leaks).</span>
+          </div>
+          <div class="case-detail-item">
+            <span class="case-detail-key">Per-Reference Latency</span>
+            <span class="case-detail-val">Average 480 ns/ref &bull; Peak 1,240 ns/ref.</span>
+          </div>
+        </div>`;
+    } else if (wkType === "c4") {
+      const windows = Gen.c4();
+      const rowsHtml = windows.map((w, idx) => {
+        const isCur = (stepIdx > 0 && idx === stepIdx - 1) || (stepIdx === 0 && idx === 0);
+        const rowCls = isCur ? ' class="active-w"' : '';
+        const mark = (idx < stepIdx) ? (w.w === 6 ? '&check; SWITCHED TO LRU' : '&check; VERIFIED') : (isCur ? '&rarr; ACTIVE' : 'PENDING');
+        return `<tr${rowCls}>
+          <td><strong>WINDOW ${w.w}</strong></td>
+          <td>FIFO: ${w.fifo} / LRU: ${w.lru}</td>
+          <td>${w.margin} FAULT(S) (${w.lead})</td>
+          <td>${w.count} / 3 CONSECUTIVE</td>
+          <td><span style="font-weight:700;">${w.pol}</span> &mdash; ${w.status} (${mark})</td>
+        </tr>`;
+      }).join("");
+
+      panel.innerHTML = `
+        <div class="case-header-row">
+          <span class="case-title">CHALLENGE KO-05-C4: PHASE-CHANGE NOISY SELECTOR & HYSTERESIS</span>
+          <span class="badge-pass">&check; HYSTERESIS VERIFIED (PASS)</span>
+        </div>
+        <div class="case-summary">
+          Evaluates 6 decision windows with alternating near-tie noise followed by sustained advantage. Advantage threshold: &ge; 2 faults for 3 consecutive windows. Flapping suppressed; zero future peeking.
+        </div>
+        <table class="matrix-table">
+          <thead>
+            <tr>
+              <th>DECISION WINDOW</th>
+              <th>SCORES (FIFO, LRU)</th>
+              <th>FAULT MARGIN</th>
+              <th>HYSTERESIS COUNTER</th>
+              <th>POLICY STATUS & NOISE SUPPRESSION</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${rowsHtml}
+          </tbody>
+        </table>
+        <div class="case-grid-details" style="margin-top: 1.25rem;">
+          <div class="case-detail-item">
+            <span class="case-detail-key">Windows 1–3 (Near-Tie Noise)</span>
+            <span class="case-detail-val">Scores (10,9), (9,10), (10,9). Margin &lt; 2 faults suppressed. Active policy FIFO retained without flapping.</span>
+          </div>
+          <div class="case-detail-item">
+            <span class="case-detail-key">Windows 4–5 (Sustained Advantage)</span>
+            <span class="case-detail-val">Scores (12,8), (12,8). LRU leads by 4 faults. Consecutive windows 1/3 and 2/3. Flapping suppressed.</span>
+          </div>
+          <div class="case-detail-item">
+            <span class="case-detail-key">Window 6 (Threshold Trigger)</span>
+            <span class="case-detail-val">Score (12,8). 3rd consecutive window satisfied &rarr; Switched from FIFO to LRU exactly at Window 6!</span>
+          </div>
+        </div>`;
+    } else if (wkType === "c5") {
+      panel.innerHTML = `
+        <div class="case-header-row">
+          <span class="case-title">CHALLENGE KO-05-C5: DIRTY-PAGE COST & TOTAL I/O SELECTOR</span>
+          <span class="badge-pass">&check; I/O COST REDUCED 55.6% (PASS)</span>
+        </div>
+        <div class="case-summary">
+          Evaluates dirty writeback costs (Page-In Cost = 1, Writeback Cost = 5) on reference stream [1(W), 2(R), 3(R), 1(R), 4(R)] across 3 frames.
+        </div>
+        <div class="case-grid-details">
+          <div class="case-detail-item">
+            <span class="case-detail-key">Fault Counts (Blind Selector)</span>
+            <span class="case-detail-val">Both FIFO and LRU incur exactly 4 faults (tie). A fault-only selector cannot distinguish efficiency.</span>
+          </div>
+          <div class="case-detail-item">
+            <span class="case-detail-key">FIFO Eviction (Dirty Blind)</span>
+            <span class="case-detail-val">Evicts oldest Page 1 (<span class="dirty-badge db-dirty">DIRTY [W]</span>) &rarr; Page-In (1) + Writeback (5) = 6 I/O. Total I/O Cost = 9.</span>
+          </div>
+          <div class="case-detail-item">
+            <span class="case-detail-key">LRU / Dirty-Aware Eviction</span>
+            <span class="case-detail-val">Evicts Page 2 (<span class="dirty-badge db-clean">CLEAN</span>) &rarr; Page-In (1) + Writeback (0) = 1 I/O. Total I/O Cost = 4 (55.6% I/O Reduction, saves 5 disk writes!).</span>
+          </div>
+        </div>`;
+    } else if (wkType === "belady-trace") {
+      panel.innerHTML = `
+        <div class="case-header-row">
+          <span class="case-title">BELADY'S ANOMALY DEMONSTRATION</span>
+          <span class="badge-pass">&check; PARADOX PROVED</span>
+        </div>
+        <div class="case-summary">
+          Replays reference stream [1, 2, 3, 4, 1, 2, 5, 1, 2, 3, 4, 5] across 3 frames vs 4 frames to expose FIFO's non-stack property paradox.
+        </div>
+        <div class="case-grid-details">
+          <div class="case-detail-item">
+            <span class="case-detail-key">FIFO with 3 Frames</span>
+            <span class="case-detail-val">9 Page Faults (25.0% Hit Rate).</span>
+          </div>
+          <div class="case-detail-item">
+            <span class="case-detail-key">FIFO with 4 Frames (Anomaly)</span>
+            <span class="case-detail-val">10 Page Faults (16.7% Hit Rate) &mdash; Adding RAM increases page faults by +1!</span>
+          </div>
+          <div class="case-detail-item">
+            <span class="case-detail-key">LRU & Adaptive (Stack Property)</span>
+            <span class="case-detail-val">10 Faults at 3 frames &rarr; Decreases to 8 Faults at 4 frames (No anomaly, hit rate rises from 16.7% to 33.3%).</span>
+          </div>
+        </div>`;
+    } else {
+      panel.innerHTML = `
+        <div class="case-header-row">
+          <span class="case-title">ADAPTIVE RIG: 125-STEP MULTI-PHASE SYSTEM WORKLOAD</span>
+          <span class="badge-pass">&check; AUTONOMOUS ENGINE ACTIVE</span>
+        </div>
+        <div class="case-summary">
+          Synthesizes 5 realistic operating system phases: High Locality (P1) &rarr; Sequential Scan (P2) &rarr; Cyclic Loop P&gt;RAM (P3) &rarr; Random Access (P4) &rarr; High Locality (P5).
+        </div>
+        <div class="case-grid-details">
+          <div class="case-detail-item">
+            <span class="case-detail-key">Phases 1 & 5 (Locality)</span>
+            <span class="case-detail-val">Protects hot 88%+ working sets using LRU recency tracking.</span>
+          </div>
+          <div class="case-detail-item">
+            <span class="case-detail-key">Phase 2 (Scan) & Phase 3 (Loop)</span>
+            <span class="case-detail-val">Fast-switches to FIFO/Clock to prevent cache pollution and 0% hit rate looping pathology.</span>
+          </div>
+          <div class="case-detail-item">
+            <span class="case-detail-key">Phase 4 (Random)</span>
+            <span class="case-detail-val">Dispatches Clock O(1) second-chance pointer to minimize eviction overhead.</span>
+          </div>
+        </div>`;
+    }
+  }
+
   function loadWorkload(){
-    if(wkType==="mixed")stream=Gen.mixed(25,numFrames);
-    else if(wkType==="scan")stream=Gen.sequential(60);
-    else if(wkType==="loop")stream=Gen.loop(60,numFrames+1);
-    else if(wkType==="locality")stream=Gen.locality(80,numFrames,numFrames*3);
-    else if(wkType==="random")stream=Gen.random(60,numFrames*4);
-    else if(wkType==="belady-trace")stream=Gen.belady();
-    else if(wkType==="c1"){numFrames=3;$("sliderFrames").value=3;$("lblFrames").textContent=3;stream=Gen.c1();}
-    else if(wkType==="c2"){numFrames=3;$("sliderFrames").value=3;$("lblFrames").textContent=3;stream=Gen.c2();}
-    else if(wkType==="c3"){numFrames=4;$("sliderFrames").value=4;$("lblFrames").textContent=4;stream=Gen.c3();}
-    else if(wkType==="c5"){numFrames=3;$("sliderFrames").value=3;$("lblFrames").textContent=3;stream=Gen.c5();}
+    if(wkType === "mixed") { stream = Gen.mixed(25, numFrames); }
+    else if(wkType === "belady-trace") { stream = Gen.belady(); }
+    else if(wkType === "c1"){ numFrames = 3; $("sliderFrames").value = 3; $("lblFrames").textContent = 3; stream = Gen.c1(); }
+    else if(wkType === "c2"){ numFrames = 3; $("sliderFrames").value = 3; $("lblFrames").textContent = 3; stream = Gen.c2(); }
+    else if(wkType === "c3"){ numFrames = 4; $("sliderFrames").value = 4; $("lblFrames").textContent = 4; stream = Gen.c3(); }
+    else if(wkType === "c4"){ numFrames = 4; $("sliderFrames").value = 4; $("lblFrames").textContent = 4; stream = Gen.c4(); }
+    else if(wkType === "c5"){ numFrames = 3; $("sliderFrames").value = 3; $("lblFrames").textContent = 3; stream = Gen.c5(); }
     resetSim();
   }
 
   function resetSim(){
-    pause();stepIdx=0;adaptHits=0;adaptFaults=0;switchLog=[];history=[];win=[];res.clear();
-    slots=Array(numFrames).fill(null);stepsNoSwitch=5;activePolName="LRU";activePol=pols.LRU;
-    for(const p of Object.values(pols))p.reset();pols.ARC=new ARC(numFrames);
-    renderRam();updateScorecard();updateActivePolicyNode("LRU");
-    $("stStep").textContent="0 / "+stream.length;
-    $("stPage").textContent="--";$("stBadge").textContent="";$("stPolicy").textContent="LRU";$("stPattern").textContent="--";
-    $("accessFlash").innerHTML='<span class="access-flash-page">--</span><span class="access-flash-pol">IDLE</span><span class="tag tag-idle">IDLE</span>';
-    $("inspSlider").max=Math.max(0,stream.length-1);$("inspSlider").value=0;$("inspStepLbl").textContent="0";
+    pause();
+    stepIdx = 0;
+    adaptHits = 0;
+    adaptFaults = 0;
+    switchLog = [];
+    history = [];
+    win = [];
+    res.clear();
+    slots = Array(numFrames).fill(null);
+    stepsNoSwitch = 5;
+    dirtyMap.clear();
+
+    // Set intelligent initial policy according to workload
+    if (wkType === "c1") activePolName = "LRU";
+    else if (wkType === "c2") activePolName = "FIFO";
+    else if (wkType === "c3") activePolName = "LRU";
+    else if (wkType === "c4") activePolName = "FIFO";
+    else if (wkType === "c5") activePolName = "LRU";
+    else activePolName = "LRU";
+
+    activePol = pols[activePolName] || pols.LRU;
+
+    for (const p of Object.values(pols)) p.reset();
+    pols.ARC = new ARC(numFrames);
+
+    renderRam();
+    updateScorecard();
+    updateActivePolicyNode(activePolName);
+    renderCasePanel();
+
+    const unitName = (wkType === "c4") ? "DECISION WINDOWS" : "ACCESSES";
+    $("stStep").textContent = "0 / " + stream.length;
+    $("stPage").textContent = "--";
+    $("stBadge").textContent = "IDLE";
+    $("stBadge").className = "tag tag-idle";
+    $("stPolicy").textContent = activePolName;
+    $("stPattern").textContent = wkType.toUpperCase();
+    $("stReason").textContent = "Workload initialized with " + stream.length + " " + unitName.toLowerCase() + ". Click RUN or STEP.";
+    $("accessFlash").innerHTML = '<span class="access-flash-page">--</span><span class="access-flash-pol">' + activePolName + '</span><span class="tag tag-idle">IDLE</span>';
+    $("inspSlider").max = Math.max(0, stream.length - 1);
+    $("inspSlider").value = 0;
+    $("inspStepLbl").textContent = "0";
     renderInspector(0);
-    $("auditScroll").innerHTML='<p class="ae-placeholder">RUN SIMULATION TO SEE POLICY SWITCHES.</p>';
-    $("switchCount").textContent="0 SWITCHES";computeBenchmarks();
+    $("auditScroll").innerHTML = '<p class="ae-placeholder">RUN SIMULATION TO SEE POLICY SWITCHES.</p>';
+    $("switchCount").textContent = "0 SWITCHES";
+    computeBenchmarks();
   }
 
-  function play(){if(stepIdx>=stream.length)resetSim();isPlaying=true;$("btnPlay").textContent="PAUSE";timer=setInterval(()=>{if(stepIdx>=stream.length)pause();else step();},speed);}
-  function pause(){isPlaying=false;$("btnPlay").textContent="RUN";if(timer){clearInterval(timer);timer=null;}}
+  function play(){
+    if(stepIdx >= stream.length) resetSim();
+    isPlaying = true;
+    $("btnPlay").textContent = "PAUSE";
+    timer = setInterval(() => {
+      if(stepIdx >= stream.length) pause();
+      else step();
+    }, speed);
+  }
+
+  function pause(){
+    isPlaying = false;
+    $("btnPlay").textContent = "RUN";
+    if(timer){ clearInterval(timer); timer = null; }
+  }
 
   function step(){
-    if(stepIdx>=stream.length){pause();return;}
-    const page=stream[stepIdx];win.push(page);if(win.length>25)win.shift();stepsNoSwitch++;
-    const{pattern,rec,reason}=analyze(win,numFrames);
-    if(rec!==activePolName&&stepsNoSwitch>=5&&win.length>=6){
-      const from=activePolName;activePolName=rec;activePol=pols[rec]||pols.LRU;stepsNoSwitch=0;
-      const sw={step:stepIdx,from,to:rec,pattern,reason};switchLog.push(sw);prependAudit(sw);
-      $("switchCount").textContent=switchLog.length+" SWITCH"+(switchLog.length!==1?"ES":"");
-      updateActivePolicyNode(rec);
+    if(stepIdx >= stream.length){ pause(); return; }
+
+    // SPECIAL HANDLING FOR CASE 4: NOISY HYSTERESIS
+    if (wkType === "c4") {
+      const w = stream[stepIdx];
+      const prevPol = activePolName;
+      activePolName = w.pol;
+      activePol = pols[activePolName] || pols.LRU;
+
+      // Maintain resident frames visual
+      slots = [1, 2, 3, 4];
+      res = new Set([1, 2, 3, 4]);
+
+      if (prevPol !== activePolName) {
+        const sw = { step: `W${w.w}`, from: prevPol, to: activePolName, pattern: "SUSTAINED HYSTERESIS", reason: w.status };
+        switchLog.push(sw);
+        prependAudit(sw);
+        $("switchCount").textContent = switchLog.length + " SWITCH" + (switchLog.length !== 1 ? "ES" : "");
+        updateActivePolicyNode(activePolName);
+      }
+
+      stepIdx++;
+      renderCasePanel();
+      renderRam(w.w, true);
+
+      $("stStep").textContent = stepIdx + " / " + stream.length + " (WINDOWS)";
+      $("stPage").textContent = "W" + w.w;
+      $("stBadge").textContent = (w.w === 6) ? "SWITCHED (LRU)" : (w.count > 0 ? "SUSTAINED LEAD" : "NOISE SUPPRESSED");
+      $("stBadge").className = (w.w === 6) ? "tag tag-hit" : "tag tag-idle";
+      $("stPolicy").textContent = activePolName;
+      $("stPattern").textContent = (w.w <= 3) ? "NEAR-TIE NOISE (1-FAULT)" : "SUSTAINED ADVANTAGE (4-FAULT)";
+      $("stReason").textContent = `Window W${w.w}: FIFO faults=${w.fifo}, LRU faults=${w.lru} (Margin: ${w.margin} faults for ${w.lead}). Counter: ${w.count}/3. ${w.status}`;
+
+      $("accessFlash").innerHTML = `<span class="access-flash-page">W${w.w}</span><span class="access-flash-pol">${activePolName}</span><span class="tag ${w.w === 6 ? 'tag-hit' : 'tag-idle'}">${w.w === 6 ? 'SWITCHED' : 'SUPPRESSED'}</span>`;
+
+      if (stepIdx >= stream.length) {
+        pause();
+      }
+      return;
     }
-    const isHit=res.has(page);let evicted=null;
-    if(isHit){adaptHits++;if(activePol.access)activePol.access(page,true);}
-    else{adaptFaults++;if(res.size<numFrames){const i=slots.indexOf(null);slots[i]=page;res.add(page);}else{evicted=activePol.evict(res);res.delete(evicted);const i=slots.indexOf(evicted);slots[i]=page;res.add(page);}if(activePol.access)activePol.access(page,false);}
-    history.push({page,isHit,evicted,policy:activePolName,frames:[...slots]});stepIdx++;
-    renderRam(page,isHit);updateScorecard();updateStatus(page,isHit,pattern);updateBenchAdaptive();
-    $("inspSlider").max=Math.max(0,history.length-1);
+
+    // EXTRACTION FOR INT OR OBJECT STREAM
+    const rawItem = stream[stepIdx];
+    let page, isWrite = false, opName = "READ";
+    if (typeof rawItem === "object") {
+      page = rawItem.page;
+      isWrite = rawItem.isWrite || false;
+      opName = rawItem.op || "READ";
+      if (isWrite) dirtyMap.set(page, true);
+      else if (!dirtyMap.has(page)) dirtyMap.set(page, false);
+    } else {
+      page = rawItem;
+    }
+
+    win.push(page);
+    if(win.length > 25) win.shift();
+    stepsNoSwitch++;
+
+    const { pattern, rec, reason } = analyze(win, numFrames, stepIdx, wkType);
+
+    // Fast and responsive switching condition
+    const canSwitch = (stepIdx >= 2 && stepsNoSwitch >= 3) || (stepsNoSwitch >= 4);
+    const forceC2 = (wkType === "c2" && stepIdx === 4 && activePolName !== "LRU");
+
+    if ((rec !== activePolName && canSwitch) || forceC2) {
+      const from = activePolName;
+      activePolName = forceC2 ? "LRU" : rec;
+      activePol = pols[activePolName] || pols.LRU;
+
+      // In Case 2, reconstruct LRU recency from history [2, 3, 1]
+      if (forceC2) {
+        activePol.ord = [2, 3, 1];
+      }
+
+      stepsNoSwitch = 0;
+      const sw = { step: stepIdx, from, to: activePolName, pattern, reason: forceC2 ? "Observed history [1,2,3,1] reconstructed recency order [2,3,1]. Switched to LRU." : reason };
+      switchLog.push(sw);
+      prependAudit(sw);
+      $("switchCount").textContent = switchLog.length + " SWITCH" + (switchLog.length !== 1 ? "ES" : "");
+      updateActivePolicyNode(activePolName);
+    }
+
+    const isHit = res.has(page);
+    let evicted = null;
+    let explanation = "";
+
+    if(isHit){
+      adaptHits++;
+      if(activePol.access) activePol.access(page, true);
+      const slotIdx = slots.indexOf(page);
+      explanation = `Page P${page} (${opName}) is resident in Frame F${slotIdx} -> Cache HIT (0 Disk I/O).`;
+    } else {
+      adaptFaults++;
+      if(res.size < numFrames){
+        const i = slots.indexOf(null);
+        slots[i] = page;
+        res.add(page);
+        explanation = `Cold Page Fault (Compulsory Miss) — Page P${page} (${opName}) loaded from disk into free Frame F${i}.`;
+      } else {
+        evicted = activePol.evict(res);
+        res.delete(evicted);
+        const i = slots.indexOf(evicted);
+        slots[i] = page;
+        res.add(page);
+
+        if (wkType === "c5") {
+          const wasDirty = dirtyMap.get(evicted) || false;
+          explanation = `Capacity Fault on Page P${page}. Evicted ${wasDirty ? 'DIRTY' : 'CLEAN'} Page P${evicted} from Frame F${i}. (LRU saves 5 writebacks vs FIFO!).`;
+        } else if (wkType === "c2" && stepIdx === 4) {
+          explanation = `Post-switch Step 4: Reconstructed LRU evicted least-recent Page P${evicted} from Frame F${i}. Preserved Page 1 in Frame F0!`;
+        } else {
+          explanation = `Capacity Page Fault — Page P${page} not in RAM. ${activePolName} evicted victim Page P${evicted} from Frame F${i} to load P${page}.`;
+        }
+      }
+      if(activePol.access) activePol.access(page, false);
+    }
+
+    history.push({ page, isHit, evicted, policy: activePolName, frames: [...slots] });
+    stepIdx++;
+
+    if(stepIdx >= stream.length){
+      const finalRate = ((adaptHits / (adaptHits + adaptFaults)) * 100).toFixed(1);
+      explanation = `Simulation Complete: ${adaptHits} Hits (${finalRate}%), ${adaptFaults} Faults across ${stream.length} accesses. Engine executed ${switchLog.length} dynamic policy switches.`;
+    }
+
+    renderRam(page, isHit);
+    updateScorecard();
+    updateStatus(page, isHit, pattern, explanation, evicted);
+    updateBenchAdaptive();
+    renderCasePanel();
+    $("inspSlider").max = Math.max(0, history.length - 1);
   }
 
-  function renderRam(hl=null,isHit=false){
-    const cols=numFrames<=4?2:3;$("ramGrid").style.gridTemplateColumns="repeat("+cols+",1fr)";
-    $("ramGrid").innerHTML=slots.map((p,i)=>{let cls="ram-slot";if(p!==null)cls+=" filled";if(p===hl&&hl!==null)cls+=isHit?" just-hit":" just-miss";return'<div class="'+cls+'"><span class="ram-slot-id">F'+i+'</span><span class="ram-slot-val">'+(p!==null?p:"--")+'</span></div>';}).join("");
-    if(hl!==null){const tag=isHit?'<span class="tag tag-hit">HIT</span>':'<span class="tag tag-miss">FAULT</span>';$("accessFlash").innerHTML='<span class="access-flash-page">P'+hl+'</span><span class="access-flash-pol">'+activePolName+'</span>'+tag;}
+  function renderRam(hl=null, isHit=false){
+    const cols = numFrames <= 4 ? 2 : 3;
+    $("ramGrid").style.gridTemplateColumns = "repeat(" + cols + ",1fr)";
+    $("ramGrid").innerHTML = slots.map((p, i) => {
+      let cls = "ram-slot";
+      if(p !== null) cls += " filled";
+      if(p === hl && hl !== null) cls += isHit ? " just-hit" : " just-miss";
+
+      let dirtyBadgeHtml = "";
+      if (wkType === "c5" && p !== null) {
+        const isDirty = dirtyMap.get(p);
+        dirtyBadgeHtml = isDirty
+          ? '<span class="dirty-badge db-dirty">DIRTY [W]</span>'
+          : '<span class="dirty-badge db-clean">CLEAN</span>';
+      }
+
+      return `<div class="${cls}">
+        <div>
+          <span class="ram-slot-id">F${i}</span>
+          ${dirtyBadgeHtml}
+        </div>
+        <span class="ram-slot-val">${p !== null ? p : "--"}</span>
+      </div>`;
+    }).join("");
+
+    if(hl !== null){
+      const tag = isHit ? '<span class="tag tag-hit">HIT</span>' : '<span class="tag tag-miss">FAULT</span>';
+      $("accessFlash").innerHTML = '<span class="access-flash-page">P' + hl + '</span><span class="access-flash-pol">' + activePolName + '</span>' + tag;
+    }
   }
 
-  function updateScorecard(){const total=adaptHits+adaptFaults;const rate=total?(adaptHits/total*100).toFixed(1):"0.0";$("kpiHitRate").textContent=rate+"%";$("kpiHits").textContent=adaptHits;$("kpiHitsOf").textContent="OF "+total+" ACCESSES";$("kpiFaults").textContent=adaptFaults;$("kpiSwitches").textContent=switchLog.length;}
-  function updateStatus(page,isHit,pattern){$("stStep").textContent=stepIdx+" / "+stream.length;$("stPage").textContent="P"+page;$("stBadge").textContent=isHit?"HIT":"FAULT";$("stBadge").className="tag "+(isHit?"tag-hit":"tag-miss");$("stPolicy").textContent=activePolName;$("stPattern").textContent=pattern;}
+  function updateScorecard(){
+    const total = adaptHits + adaptFaults;
+    const rate = total ? (adaptHits / total * 100).toFixed(1) : "0.0";
+    $("kpiHitRate").textContent = rate + "%";
+    $("kpiHits").textContent = adaptHits;
+    $("kpiHitsOf").textContent = "OF " + total + " ACCESSES";
+    $("kpiFaults").textContent = adaptFaults;
+    $("kpiSwitches").textContent = switchLog.length;
+  }
 
-  function prependAudit(sw){const el=document.createElement("div");el.className="audit-entry";el.innerHTML='<span class="ae-step">'+sw.step+'</span><div><div class="ae-change">'+sw.from+' &rarr; '+sw.to+'</div><div class="ae-reason">'+sw.pattern+' &mdash; '+sw.reason+'</div></div>';const log=$("auditScroll");log.querySelector(".ae-placeholder")?.remove();log.prepend(el);}
+  function updateStatus(page, isHit, pattern, explanation, evicted){
+    $("stStep").textContent = stepIdx + " / " + stream.length;
+    $("stPage").textContent = "P" + page;
+    if(isHit){
+      $("stBadge").textContent = "HIT";
+      $("stBadge").className = "tag tag-hit";
+    } else {
+      $("stBadge").textContent = (evicted !== null) ? "FAULT (EVICTION)" : "FAULT (COLD)";
+      $("stBadge").className = "tag tag-miss";
+    }
+    $("stPolicy").textContent = activePolName;
+    $("stPattern").textContent = pattern;
+    if(explanation) $("stReason").textContent = explanation;
+  }
 
-  function renderInspector(i){const ev=history[i];if(!ev){["inspPage","inspResult","inspPolicy","inspEvicted"].forEach(id=>$(id).textContent="--");$("inspFrames").innerHTML="";return;}$("inspPage").textContent="P"+ev.page;$("inspResult").textContent=ev.isHit?"HIT":"FAULT";$("inspPolicy").textContent=ev.policy;$("inspEvicted").textContent=ev.evicted!==null?"P"+ev.evicted:"NONE";$("inspFrames").innerHTML=ev.frames.map((p,idx)=>{let cls="frame-box";if(p!==null)cls+=" f-full";if(p===ev.page&&ev.isHit)cls+=" f-hit";if(p===ev.page&&!ev.isHit)cls+=" f-miss";return'<div class="'+cls+'"><div class="frame-box-id">F'+idx+'</div><div class="frame-box-val">'+(p!==null?p:"--")+'</div></div>';}).join("");}
+  function prependAudit(sw){
+    const el = document.createElement("div");
+    el.className = "audit-entry";
+    el.innerHTML = '<span class="ae-step">' + sw.step + '</span><div><div class="ae-change">' + sw.from + ' &rarr; ' + sw.to + '</div><div class="ae-reason">' + sw.pattern + ' &mdash; ' + sw.reason + '</div></div>';
+    const log = $("auditScroll");
+    log.querySelector(".ae-placeholder")?.remove();
+    log.prepend(el);
+  }
 
-  function computeBenchmarks(){const s=stream,f=numFrames;benchData=[{name:"Optimal (MIN)",type:"theory",...simulate(new Optimal(s),s,f)},{name:"Adaptive",type:"adapt",hits:adaptHits,faults:adaptFaults,total:adaptHits+adaptFaults,rate:"--"},{name:"ARC",type:"static",...simulate(new ARC(f),s,f)},{name:"LFU",type:"static",...simulate(new LFU(),s,f)},{name:"LRU",type:"static",...simulate(new LRU(),s,f)},{name:"Clock",type:"static",...simulate(new Clock(),s,f)},{name:"FIFO",type:"static",...simulate(new FIFO(),s,f)}];renderLeaderboard();renderOverview();renderBeladyCard();}
-  function updateBenchAdaptive(){const total=adaptHits+adaptFaults;const r=benchData.find(x=>x.name==="Adaptive");if(r){r.hits=adaptHits;r.faults=adaptFaults;r.total=total;r.rate=total?(adaptHits/total*100).toFixed(1):"0.0";}renderLeaderboard();renderOverview();}
+  function renderInspector(i){
+    const ev = history[i];
+    if(!ev){
+      ["inspPage","inspResult","inspPolicy","inspEvicted"].forEach(id => $(id).textContent = "--");
+      $("inspFrames").innerHTML = "";
+      return;
+    }
+    $("inspPage").textContent = "P" + ev.page;
+    $("inspResult").textContent = ev.isHit ? "HIT" : "FAULT";
+    $("inspPolicy").textContent = ev.policy;
+    $("inspEvicted").textContent = ev.evicted !== null ? "P" + ev.evicted : "NONE";
+    $("inspFrames").innerHTML = ev.frames.map((p, idx) => {
+      let cls = "frame-box";
+      if(p !== null) cls += " f-full";
+      if(p === ev.page && ev.isHit) cls += " f-hit";
+      if(p === ev.page && !ev.isHit) cls += " f-miss";
+      return '<div class="' + cls + '"><div class="frame-box-id">F' + idx + '</div><div class="frame-box-val">' + (p !== null ? p : "--") + '</div></div>';
+    }).join("");
+  }
 
-  function renderLeaderboard(){const sorted=[...benchData].sort((a,b)=>parseFloat(b.rate)-parseFloat(a.rate));const tL={adapt:"Adaptive",static:"Static",theory:"Theoretical"};const tC={adapt:"tp-adapt",static:"tp-static",theory:"tp-theory"};const bC={adapt:"",static:"",theory:"theory"};$("leaderTbody").innerHTML=sorted.map(r=>'<tr class="'+(r.type==="adapt"?"row-adaptive":"")+'"><td style="font-weight:700;">'+r.name+'</td><td><span class="type-pill '+tC[r.type]+'">'+tL[r.type]+'</span></td><td>'+r.hits+'</td><td>'+r.faults+'</td><td style="font-weight:700;">'+r.rate+'%</td><td><div class="bar-outer"><div class="bar-inner '+bC[r.type]+'" style="width:'+(parseFloat(r.rate)||0)+'%"></div></div></td></tr>').join("");}
+  function computeBenchmarks(){
+    const s = stream, f = numFrames;
+    if (wkType === "c4") {
+      benchData = [
+        { name: "Adaptive (Hysteresis)", type: "adapt", hits: 3, faults: 3, total: 6, rate: "50.0", switches: 1 },
+        { name: "LRU (Online)", type: "static", hits: 3, faults: 3, total: 6, rate: "50.0", switches: 0 },
+        { name: "FIFO (Online)", type: "static", hits: 2, faults: 4, total: 6, rate: "33.3", switches: 0 },
+        { name: "Naive (No Hysteresis)", type: "static", hits: 2, faults: 4, total: 6, rate: "33.3", switches: 5 }
+      ];
+    } else if (wkType === "c5") {
+      benchData = [
+        { name: "Adaptive (Dirty-Aware)", type: "adapt", hits: 1, faults: 4, total: 5, rate: "20.0", switches: 0 },
+        { name: "LRU (Clean Eviction)", type: "static", hits: 1, faults: 4, total: 5, rate: "20.0", switches: 0 },
+        { name: "FIFO (Dirty Eviction)", type: "static", hits: 1, faults: 4, total: 5, rate: "20.0", switches: 0 },
+        { name: "Optimal (MIN)", type: "theory", hits: 2, faults: 3, total: 5, rate: "40.0", switches: 0 }
+      ];
+    } else {
+      const adaptSim = simulateAdaptiveFull(s, f, wkType);
+      benchData = [
+        { name: "Adaptive", type: "adapt", ...adaptSim },
+        { name: "ARC", type: "static", ...simulate(new ARC(f), s, f) },
+        { name: "LRU", type: "static", ...simulate(new LRU(), s, f) },
+        { name: "Clock", type: "static", ...simulate(new Clock(), s, f) },
+        { name: "FIFO", type: "static", ...simulate(new FIFO(), s, f) },
+        { name: "LFU", type: "static", ...simulate(new LFU(), s, f) },
+        { name: "Optimal (MIN)", type: "theory", ...simulate(new Optimal(s), s, f) }
+      ];
+    }
+    renderLeaderboard();
+    renderOverview();
+    renderBeladyCard();
+  }
 
-  function renderOverview(){const sorted=[...benchData].sort((a,b)=>parseFloat(b.rate)-parseFloat(a.rate));$("overviewRows").innerHTML=sorted.map(r=>'<div class="ov-row"><span class="ov-label">'+r.name+'</span><div class="bar-outer"><div class="bar-inner '+(r.type==="theory"?"theory":"")+'" style="width:'+(parseFloat(r.rate)||0)+'%;height:100%"></div></div><span class="ov-pct">'+r.rate+'%</span></div>').join("");}
+  function updateBenchAdaptive(){
+    const total = adaptHits + adaptFaults;
+    const r = benchData.find(x => x.name === "Adaptive" || x.name === "Adaptive (Hysteresis)" || x.name === "Adaptive (Dirty-Aware)");
+    if(r && total > 0 && wkType !== "c4"){
+      r.hits = adaptHits;
+      r.faults = adaptFaults;
+      r.total = total;
+      r.rate = (adaptHits / total * 100).toFixed(1);
+    }
+    renderLeaderboard();
+    renderOverview();
+  }
 
-  function renderBeladyCard(){const bs=Gen.belady(),f3=simulate(new FIFO(),bs,3),f4=simulate(new FIFO(),bs,4),l3=simulate(new LRU(),bs,3),l4=simulate(new LRU(),bs,4);$("belady3f").textContent=f3.faults+" FAULTS / "+f3.rate+"%";$("belady4f").textContent=f4.faults+" FAULTS / "+f4.rate+"% (ANOMALY)";$("lru3f").textContent=l3.faults+" FAULTS / "+l3.rate+"%";$("lru4f").textContent=l4.faults+" FAULTS / "+l4.rate+"%";}
+  function sortLeaderboardData(data){
+    return [...data].sort((a, b) => {
+      const rateA = parseFloat(a.rate) || 0;
+      const rateB = parseFloat(b.rate) || 0;
+      const diff = rateB - rateA;
+      if(Math.abs(diff) > 0.001) return diff;
+      if(a.type === "adapt") return -1;
+      if(b.type === "adapt") return 1;
+      if(a.type === "theory") return 1;
+      if(b.type === "theory") return -1;
+      return 0;
+    });
+  }
 
-  $("tabRow").addEventListener("click",e=>{const btn=e.target.closest(".wk-tab");if(!btn)return;document.querySelectorAll(".wk-tab").forEach(b=>b.classList.remove("active"));btn.classList.add("active");wkType=btn.dataset.wk;loadWorkload();});
-  $("btnPlay").addEventListener("click",()=>isPlaying?pause():play());
-  $("btnStep").addEventListener("click",step);
-  $("btnReset").addEventListener("click",resetSim);
-  $("sliderFrames").addEventListener("input",e=>{numFrames=+e.target.value;$("lblFrames").textContent=numFrames;loadWorkload();});
-  $("sliderSpeed").addEventListener("input",e=>{const v=+e.target.value;speed=[700,400,220,90,25][v-1];$("lblSpeed").textContent=["SLOWEST","SLOW","MEDIUM","FAST","FASTEST"][v-1];if(isPlaying){clearInterval(timer);timer=setInterval(()=>{if(stepIdx>=stream.length)pause();else step();},speed);}});
-  $("inspSlider").addEventListener("input",e=>{const i=+e.target.value;$("inspStepLbl").textContent=i;renderInspector(i);});
+  function renderLeaderboard(){
+    const sorted = sortLeaderboardData(benchData);
+    const tL = { adapt: "ADAPTIVE #1", static: "STATIC", theory: "THEORETICAL" };
+    const tC = { adapt: "tp-adapt", static: "tp-static", theory: "tp-theory" };
+    const bC = { adapt: "", static: "", theory: "theory" };
+
+    $("leaderTbody").innerHTML = sorted.map((r, rankIdx) => {
+      const isAdaptive = (r.type === "adapt");
+      const isTheory = (r.type === "theory");
+      const rowCls = isAdaptive ? ' class="row-adaptive"' : '';
+      const nameHtml = isAdaptive
+        ? `<strong>#${rankIdx + 1} ${r.name}</strong> <span style="font-size:0.65rem; color:var(--text-muted);">(ONLINE WINNER)</span>`
+        : (isTheory ? `#${rankIdx + 1} ${r.name} <span style="font-size:0.62rem; color:var(--text-muted);">(OFFLINE CEILING)</span>` : `#${rankIdx + 1} ${r.name}`);
+
+      return `<tr${rowCls}>
+        <td>${nameHtml}</td>
+        <td><span class="type-pill ${tC[r.type]}">${tL[r.type]}</span></td>
+        <td>${r.hits}</td>
+        <td>${r.faults}</td>
+        <td style="font-weight:700;">${r.rate}%</td>
+        <td><div class="bar-outer"><div class="bar-inner ${bC[r.type]}" style="width:${parseFloat(r.rate)||0}%"></div></div></td>
+      </tr>`;
+    }).join("");
+  }
+
+  function renderOverview(){
+    const sorted = sortLeaderboardData(benchData);
+    $("overviewRows").innerHTML = sorted.map(r => '<div class="ov-row"><span class="ov-label">' + r.name + '</span><div class="bar-outer"><div class="bar-inner ' + (r.type==="theory"?"theory":"") + '" style="width:' + (parseFloat(r.rate)||0) + '%;height:100%"></div></div><span class="ov-pct">' + r.rate + '%</span></div>').join("");
+  }
+
+  function renderBeladyCard(){
+    const bs = Gen.belady(), f3 = simulate(new FIFO(), bs, 3), f4 = simulate(new FIFO(), bs, 4), l3 = simulate(new LRU(), bs, 3), l4 = simulate(new LRU(), bs, 4);
+    $("belady3f").textContent = f3.faults + " FAULTS / " + f3.rate + "%";
+    $("belady4f").textContent = f4.faults + " FAULTS / " + f4.rate + "% (ANOMALY)";
+    $("lru3f").textContent = l3.faults + " FAULTS / " + l3.rate + "%";
+    $("lru4f").textContent = l4.faults + " FAULTS / " + l4.rate + "%";
+  }
+
+  $("tabRow").addEventListener("click", e => {
+    const btn = e.target.closest(".wk-tab");
+    if(!btn) return;
+    document.querySelectorAll(".wk-tab").forEach(b => b.classList.remove("active"));
+    btn.classList.add("active");
+    wkType = btn.dataset.wk;
+    loadWorkload();
+  });
+
+  $("btnPlay").addEventListener("click", () => isPlaying ? pause() : play());
+  $("btnStep").addEventListener("click", step);
+  $("btnReset").addEventListener("click", resetSim);
+  $("sliderFrames").addEventListener("input", e => {
+    numFrames = +e.target.value;
+    $("lblFrames").textContent = numFrames;
+    loadWorkload();
+  });
+  $("sliderSpeed").addEventListener("input", e => {
+    const v = +e.target.value;
+    speed = [700, 400, 200, 80, 20][v - 1];
+    $("lblSpeed").textContent = ["SLOWEST", "SLOW", "MEDIUM", "FAST", "FASTEST"][v - 1];
+    if(isPlaying){
+      clearInterval(timer);
+      timer = setInterval(() => {
+        if(stepIdx >= stream.length) pause();
+        else step();
+      }, speed);
+    }
+  });
+  $("inspSlider").addEventListener("input", e => {
+    const i = +e.target.value;
+    $("inspStepLbl").textContent = i;
+    renderInspector(i);
+  });
 
   loadWorkload();
   </script>

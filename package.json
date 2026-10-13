@@ -1,0 +1,21 @@
+{
+  "name": "osh020-adaptive-page-replacement",
+  "version": "1.0.0",
+  "description": "OSH020 - Workload-Adaptive Page Replacement Simulator and Memory Management Engine",
+  "main": "index.html",
+  "scripts": {
+    "start": "npx serve .",
+    "test": "python test_all_challenges.py"
+  },
+  "keywords": [
+    "operating-systems",
+    "page-replacement",
+    "adaptive-memory",
+    "lru",
+    "fifo",
+    "arc",
+    "beladys-anomaly"
+  ],
+  "author": "arnwdeep",
+  "license": "MIT"
+}

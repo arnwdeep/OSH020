@@ -417,8 +417,18 @@
       border: none;
       border-top: 2px solid #000000;
       border-bottom: 2px solid #000000;
-      padding: 1.75rem 0;
-      margin-bottom: 2.25rem;
+      padding: 1.25rem 0;
+      margin-bottom: 2rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      background: transparent;
+    }
+    .case-bottom-panel {
+      border-top: 2px solid #000000;
+      padding-top: 2.25rem;
+      margin-top: 3rem;
+      margin-bottom: 2.5rem;
       display: flex;
       flex-direction: column;
       gap: 1.25rem;
@@ -1313,6 +1323,9 @@
         </main>
       </div>
 
+      <!-- DETAILED TEST CASE WALKTHROUGH & AUDIT MATRIX (RENDERED AT BOTTOM) -->
+      <div class="case-bottom-panel" id="caseTableBottom"></div>
+
       <!-- FOOTER -->
       <footer>
         <span>OSH020 &bull; WORKLOAD-ADAPTIVE PAGE REPLACEMENT</span>
@@ -1864,6 +1877,7 @@
 
   function renderCasePanel() {
     const panel = $("casePanel");
+    const bottomPanel = $("caseTableBottom");
     if (!panel) return;
 
     if (wkType === "c1") {
@@ -1875,27 +1889,7 @@
         <div class="case-summary">
           Replays reference stream [1, 2, 3, 1, 4, 1] across 3 physical frames from empty caches under FIFO, LRU, Clock, and Optimal.
         </div>
-        <table class="matrix-table">
-          <thead>
-            <tr>
-              <th>REQUEST</th>
-              <th>FIFO RAM AFTER REQUEST</th>
-              <th>FIFO RESULT</th>
-              <th>FIFO EXPLANATION</th>
-              <th>LRU RESULT</th>
-              <th>LRU EXPLANATION</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr><td><strong>1</strong></td><td>[1, &ndash;, &ndash;]</td><td><span class="tag tag-miss">FAULT</span></td><td>Page 1 is missing.</td><td><span class="tag tag-miss">FAULT</span></td><td>Page 1 loaded into Frame F0.</td></tr>
-            <tr><td><strong>2</strong></td><td>[1, 2, &ndash;]</td><td><span class="tag tag-miss">FAULT</span></td><td>Page 2 is missing.</td><td><span class="tag tag-miss">FAULT</span></td><td>Page 2 loaded into Frame F1.</td></tr>
-            <tr><td><strong>3</strong></td><td>[1, 2, 3]</td><td><span class="tag tag-miss">FAULT</span></td><td>Page 3 fills the final frame.</td><td><span class="tag tag-miss">FAULT</span></td><td>Page 3 fills the final frame F2.</td></tr>
-            <tr><td><strong>1</strong></td><td>[1, 2, 3]</td><td><span class="tag tag-hit">HIT</span></td><td>Page 1 is already present (queue unaffected).</td><td><span class="tag tag-hit">HIT</span></td><td>Page 1 touched to MRU recency stack.</td></tr>
-            <tr><td><strong>4</strong></td><td>[4, 2, 3]</td><td><span class="tag tag-miss">FAULT</span></td><td>FIFO evicts Page 1 (oldest inserted page).</td><td><span class="tag tag-miss">FAULT</span></td><td>LRU evicts Page 2 (least recently used). Preserves P1!</td></tr>
-            <tr><td><strong>1</strong></td><td>[4, 1, 3]</td><td><span class="tag tag-miss">FAULT</span></td><td>FIFO now evicts Page 2 (Suffers extra fault on P1!).</td><td><span class="tag tag-hit">HIT</span></td><td>LRU verified Cache HIT on preserved Page 1!</td></tr>
-          </tbody>
-        </table>
-        <div class="case-grid-details" style="margin-top: 1.25rem;">
+        <div class="case-grid-details">
           <div class="case-detail-item">
             <span class="case-detail-key">Invariant 1 (FIFO Insertion Order)</span>
             <span class="case-detail-val">Step 3 hit on Page 1 does NOT reorder insertion queue &rarr; Step 4 evicts Page 1 &rarr; Step 5 suffers FAULT on Page 1 (5 Faults / 16.7% Hit Rate).</span>
@@ -1909,6 +1903,34 @@
             <span class="case-detail-val">LRU recency protects the active working set; FIFO suffers an extra fault due to rigid insertion ordering.</span>
           </div>
         </div>`;
+
+      if (bottomPanel) {
+        bottomPanel.innerHTML = `
+          <div class="case-header-row">
+            <span class="case-title">CHALLENGE 1 WALKTHROUGH: STEP-BY-STEP FAULT ACCOUNTING</span>
+            <span style="font-size:0.75rem; font-weight:700; color:var(--text-muted); text-transform:uppercase;">Stream: [1, 2, 3, 1, 4, 1] &bull; 3 Frames</span>
+          </div>
+          <table class="matrix-table">
+            <thead>
+              <tr>
+                <th>REQUEST</th>
+                <th>FIFO RAM AFTER REQUEST</th>
+                <th>FIFO RESULT</th>
+                <th>FIFO EXPLANATION</th>
+                <th>LRU RESULT</th>
+                <th>LRU EXPLANATION</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td><strong>1</strong></td><td>[1, &ndash;, &ndash;]</td><td><span class="tag tag-miss">FAULT</span></td><td>Page 1 is missing (Cold compulsory fault).</td><td><span class="tag tag-miss">FAULT</span></td><td>Page 1 loaded into Frame F0.</td></tr>
+              <tr><td><strong>2</strong></td><td>[1, 2, &ndash;]</td><td><span class="tag tag-miss">FAULT</span></td><td>Page 2 is missing (Cold compulsory fault).</td><td><span class="tag tag-miss">FAULT</span></td><td>Page 2 loaded into Frame F1.</td></tr>
+              <tr><td><strong>3</strong></td><td>[1, 2, 3]</td><td><span class="tag tag-miss">FAULT</span></td><td>Page 3 fills the final frame.</td><td><span class="tag tag-miss">FAULT</span></td><td>Page 3 fills the final frame F2.</td></tr>
+              <tr><td><strong>1</strong></td><td>[1, 2, 3]</td><td><span class="tag tag-hit">HIT</span></td><td>Page 1 is already present (queue unaffected).</td><td><span class="tag tag-hit">HIT</span></td><td>Page 1 touched to MRU recency stack.</td></tr>
+              <tr><td><strong>4</strong></td><td>[4, 2, 3]</td><td><span class="tag tag-miss">FAULT</span></td><td>FIFO evicts Page 1 (oldest inserted page).</td><td><span class="tag tag-miss">FAULT</span></td><td>LRU evicts Page 2 (least recently used). Preserves P1!</td></tr>
+              <tr><td><strong>1</strong></td><td>[4, 1, 3]</td><td><span class="tag tag-miss">FAULT</span></td><td>FIFO now evicts Page 2 (Suffers extra fault on P1!).</td><td><span class="tag tag-hit">HIT</span></td><td>LRU verified Cache HIT on preserved Page 1!</td></tr>
+            </tbody>
+          </table>`;
+      }
     } else if (wkType === "c2") {
       panel.innerHTML = `
         <div class="case-header-row">
@@ -1932,6 +1954,34 @@
             <span class="case-detail-val">Reference 4 evicts least-recent Page 2 &rarr; Reference 1 is a verified Cache HIT!</span>
           </div>
         </div>`;
+
+      if (bottomPanel) {
+        bottomPanel.innerHTML = `
+          <div class="case-header-row">
+            <span class="case-title">CHALLENGE 2 RECONCILIATION AUDIT: PREFIX TO HOT-SWAP TIMELINE</span>
+            <span style="font-size:0.75rem; font-weight:700; color:var(--text-muted); text-transform:uppercase;">Prefix: [1,2,3,1] under FIFO &bull; Post-switch: [4,1] under LRU</span>
+          </div>
+          <table class="matrix-table">
+            <thead>
+              <tr>
+                <th>STEP</th>
+                <th>ACCESS</th>
+                <th>PHASE / POLICY</th>
+                <th>RESIDENT FRAMES</th>
+                <th>RECONSTRUCTED STATE</th>
+                <th>ACTION & EXPLANATION</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td>0</td><td>P1</td><td>Prefix (FIFO)</td><td>[1, &ndash;, &ndash;]</td><td>Queue: [1]</td><td>Cold miss &rarr; Loaded into Frame F0</td></tr>
+              <tr><td>1</td><td>P2</td><td>Prefix (FIFO)</td><td>[1, 2, &ndash;]</td><td>Queue: [1, 2]</td><td>Cold miss &rarr; Loaded into Frame F1</td></tr>
+              <tr><td>2</td><td>P3</td><td>Prefix (FIFO)</td><td>[1, 2, 3]</td><td>Queue: [1, 2, 3]</td><td>Cold miss &rarr; Loaded into Frame F2</td></tr>
+              <tr><td>3</td><td>P1</td><td>Prefix (FIFO)</td><td>[1, 2, 3]</td><td>Queue: [1, 2, 3]</td><td>Cache HIT &rarr; FIFO order preserved</td></tr>
+              <tr class="active-w"><td>4</td><td>P4</td><td><strong>HOT-SWAP TO LRU</strong></td><td>[4, 2, 3] &rarr; [4, 1, 3]</td><td>Recency: [2 (LRU), 3, 1 (MRU)]</td><td><strong>Evicts Page 2 (LRU victim). Preserves Page 1 in Frame F0!</strong></td></tr>
+              <tr class="active-w"><td>5</td><td>P1</td><td>Post-Switch (LRU)</td><td>[4, 1, 3]</td><td>Recency: [3, 4, 1]</td><td><strong>VERIFIED HIT on Page 1! (Zero invalidation fault).</strong></td></tr>
+            </tbody>
+          </table>`;
+      }
     } else if (wkType === "c3") {
       panel.innerHTML = `
         <div class="case-header-row">
@@ -1955,6 +2005,33 @@
             <span class="case-detail-val">Average 480 ns/ref &bull; Peak 1,240 ns/ref.</span>
           </div>
         </div>`;
+
+      if (bottomPanel) {
+        bottomPanel.innerHTML = `
+          <div class="case-header-row">
+            <span class="case-title">CHALLENGE 3 SHADOW BUDGET TELEMETRY: 4-POLICY OVERHEAD & BOUNDS</span>
+            <span style="font-size:0.75rem; font-weight:700; color:var(--text-muted); text-transform:uppercase;">1,000 References &bull; Cycling 1..20 &bull; 4 Frames</span>
+          </div>
+          <table class="matrix-table">
+            <thead>
+              <tr>
+                <th>SHADOW CANDIDATE</th>
+                <th>METADATA STRUCTURE</th>
+                <th>FOOTPRINT PER PAGE</th>
+                <th>BOUNDED CAP</th>
+                <th>PEAK MEASURED</th>
+                <th>STATUS</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td><strong>FIFO</strong></td><td>Circular Queue Pointer</td><td>1 word / entry</td><td>20 units</td><td>16 units</td><td><span class="tag tag-hit">BOUNDED</span></td></tr>
+              <tr><td><strong>LRU</strong></td><td>Doubly-Linked Recency Stack</td><td>2 pointers / entry</td><td>24 units</td><td>16 units</td><td><span class="tag tag-hit">BOUNDED</span></td></tr>
+              <tr><td><strong>Clock</strong></td><td>Use-Bit Circular Buffer</td><td>1 bit / frame</td><td>16 units</td><td>16 units</td><td><span class="tag tag-hit">BOUNDED</span></td></tr>
+              <tr><td><strong>LFU</strong></td><td>Min-Heap Frequency Map</td><td>Counter + Timestamp</td><td>20 units</td><td>16 units</td><td><span class="tag tag-hit">BOUNDED</span></td></tr>
+              <tr class="active-w"><td><strong>TOTAL SHADOW SYSTEM</strong></td><td>Unified Multi-Policy Tracker</td><td>Combined State Overhead</td><td><strong>80 UNITS</strong></td><td><strong>64 UNITS</strong></td><td><span class="tag tag-hit">&check; PASS (&le; 1.5&times; CAP)</span></td></tr>
+            </tbody>
+          </table>`;
+      }
     } else if (wkType === "c4") {
       const windows = Gen.c4();
       const rowsHtml = windows.map((w, idx) => {
@@ -1978,21 +2055,7 @@
         <div class="case-summary">
           Evaluates 6 decision windows with alternating near-tie noise followed by sustained advantage. Advantage threshold: &ge; 2 faults for 3 consecutive windows. Flapping suppressed; zero future peeking.
         </div>
-        <table class="matrix-table">
-          <thead>
-            <tr>
-              <th>DECISION WINDOW</th>
-              <th>SCORES (FIFO, LRU)</th>
-              <th>FAULT MARGIN</th>
-              <th>HYSTERESIS COUNTER</th>
-              <th>POLICY STATUS & NOISE SUPPRESSION</th>
-            </tr>
-          </thead>
-          <tbody>
-            ${rowsHtml}
-          </tbody>
-        </table>
-        <div class="case-grid-details" style="margin-top: 1.25rem;">
+        <div class="case-grid-details">
           <div class="case-detail-item">
             <span class="case-detail-key">Windows 1–3 (Near-Tie Noise)</span>
             <span class="case-detail-val">Scores (10,9), (9,10), (10,9). Margin &lt; 2 faults suppressed. Active policy FIFO retained without flapping.</span>
@@ -2006,6 +2069,28 @@
             <span class="case-detail-val">Score (12,8). 3rd consecutive window satisfied &rarr; Switched from FIFO to LRU exactly at Window 6!</span>
           </div>
         </div>`;
+
+      if (bottomPanel) {
+        bottomPanel.innerHTML = `
+          <div class="case-header-row">
+            <span class="case-title">CHALLENGE 4 DECISION MATRIX: 6-WINDOW HYSTERESIS & NOISE SUPPRESSION</span>
+            <span style="font-size:0.75rem; font-weight:700; color:var(--text-muted); text-transform:uppercase;">Advantage Threshold: &ge; 2 Faults &bull; Required: 3 Consecutive Windows</span>
+          </div>
+          <table class="matrix-table">
+            <thead>
+              <tr>
+                <th>DECISION WINDOW</th>
+                <th>SCORES (FIFO, LRU)</th>
+                <th>FAULT MARGIN</th>
+                <th>HYSTERESIS COUNTER</th>
+                <th>POLICY STATUS & NOISE SUPPRESSION</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${rowsHtml}
+            </tbody>
+          </table>`;
+      }
     } else if (wkType === "c5") {
       panel.innerHTML = `
         <div class="case-header-row">
@@ -2029,6 +2114,35 @@
             <span class="case-detail-val">Evicts Page 2 (<span class="dirty-badge db-clean">CLEAN</span>) &rarr; Page-In (1) + Writeback (0) = 1 I/O. Total I/O Cost = 4 (55.6% I/O Reduction, saves 5 disk writes!).</span>
           </div>
         </div>`;
+
+      if (bottomPanel) {
+        bottomPanel.innerHTML = `
+          <div class="case-header-row">
+            <span class="case-title">CHALLENGE 5 I/O COST ACCOUNTING: DIRTY VS CLEAN EVICTION AUDIT</span>
+            <span style="font-size:0.75rem; font-weight:700; color:var(--text-muted); text-transform:uppercase;">Page-In Cost: 1 &bull; Writeback Cost: 5 &bull; 3 Frames</span>
+          </div>
+          <table class="matrix-table">
+            <thead>
+              <tr>
+                <th>STEP</th>
+                <th>PAGE</th>
+                <th>OP</th>
+                <th>RESIDENT RAM</th>
+                <th>FIFO EVICTION (I/O)</th>
+                <th>LRU/DIRTY-AWARE EVICTION (I/O)</th>
+                <th>SAVINGS</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td>0</td><td>P1</td><td>WRITE</td><td>[1*, &ndash;, &ndash;]</td><td>Cold miss &rarr; Page-in (1)</td><td>Cold miss &rarr; Page-in (1)</td><td>0</td></tr>
+              <tr><td>1</td><td>P2</td><td>READ</td><td>[1*, 2, &ndash;]</td><td>Cold miss &rarr; Page-in (1)</td><td>Cold miss &rarr; Page-in (1)</td><td>0</td></tr>
+              <tr><td>2</td><td>P3</td><td>READ</td><td>[1*, 2, 3]</td><td>Cold miss &rarr; Page-in (1)</td><td>Cold miss &rarr; Page-in (1)</td><td>0</td></tr>
+              <tr><td>3</td><td>P1</td><td>READ</td><td>[1*, 2, 3]</td><td>Cache HIT (0)</td><td>Cache HIT (0)</td><td>0</td></tr>
+              <tr class="active-w"><td>4</td><td>P4</td><td>READ</td><td>[4, ...]</td><td>Evicts Page 1 (DIRTY) &rarr; 1 + 5 = 6 I/O</td><td>Evicts Page 2 (CLEAN) &rarr; 1 + 0 = 1 I/O</td><td><strong>+5 Disk Writes Saved!</strong></td></tr>
+              <tr class="active-w"><td colspan="4"><strong>CUMULATIVE SYSTEM TOTAL</strong></td><td><strong>9 TOTAL I/O</strong></td><td><strong>4 TOTAL I/O</strong></td><td><strong>55.6% REDUCTION</strong></td></tr>
+            </tbody>
+          </table>`;
+      }
     } else if (wkType === "belady-trace") {
       panel.innerHTML = `
         <div class="case-header-row">
@@ -2052,6 +2166,34 @@
             <span class="case-detail-val">10 Faults at 3 frames &rarr; Decreases to 8 Faults at 4 frames (No anomaly, hit rate rises from 16.7% to 33.3%).</span>
           </div>
         </div>`;
+
+      if (bottomPanel) {
+        bottomPanel.innerHTML = `
+          <div class="case-header-row">
+            <span class="case-title">BELADY'S ANOMALY COMPARATIVE TRACE AUDIT (3 VS 4 FRAMES)</span>
+            <span style="font-size:0.75rem; font-weight:700; color:var(--text-muted); text-transform:uppercase;">Trace: [1, 2, 3, 4, 1, 2, 5, 1, 2, 3, 4, 5]</span>
+          </div>
+          <table class="matrix-table">
+            <thead>
+              <tr>
+                <th>REF #</th>
+                <th>PAGE</th>
+                <th>FIFO (3 FRAMES)</th>
+                <th>FIFO (4 FRAMES)</th>
+                <th>FIFO ANOMALY?</th>
+                <th>LRU (3 FRAMES)</th>
+                <th>LRU (4 FRAMES)</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td>1..4</td><td>1, 2, 3, 4</td><td>Fault, Fault, Fault, Fault</td><td>Fault, Fault, Fault, Fault</td><td>Tie</td><td>Fault, Fault, Fault, Fault</td><td>Fault, Fault, Fault, Fault</td></tr>
+              <tr><td>5</td><td>1</td><td>FAULT (Evicted 1)</td><td><span class="tag tag-hit">HIT</span></td><td>FIFO 4f leads</td><td>FAULT (Evicted 1)</td><td><span class="tag tag-hit">HIT</span></td></tr>
+              <tr><td>6</td><td>2</td><td>FAULT (Evicted 2)</td><td><span class="tag tag-hit">HIT</span></td><td>FIFO 4f leads</td><td>FAULT (Evicted 2)</td><td><span class="tag tag-hit">HIT</span></td></tr>
+              <tr class="active-w"><td>7..12</td><td>5, 1, 2, 3, 4, 5</td><td>5 Faults / 1 Hit</td><td><strong>6 Faults / 0 Hits</strong></td><td><strong>ANOMALY (+1 FAULT)</strong></td><td>4 Faults / 2 Hits</td><td><strong>2 Faults / 4 Hits</strong></td></tr>
+              <tr class="active-w"><td colspan="2"><strong>FINAL RESULTS</strong></td><td><strong>9 FAULTS (25.0%)</strong></td><td><strong>10 FAULTS (16.7%)</strong></td><td><span class="tag tag-miss">PARADOX CONFIRMED</span></td><td><strong>10 FAULTS (16.7%)</strong></td><td><strong>8 FAULTS (33.3%)</strong></td></tr>
+            </tbody>
+          </table>`;
+      }
     } else {
       panel.innerHTML = `
         <div class="case-header-row">
@@ -2075,6 +2217,33 @@
             <span class="case-detail-val">Dispatches Clock O(1) second-chance pointer to minimize eviction overhead.</span>
           </div>
         </div>`;
+
+      if (bottomPanel) {
+        bottomPanel.innerHTML = `
+          <div class="case-header-row">
+            <span class="case-title">125-STEP ADAPTIVE RIG: MULTI-PHASE SYSTEM WORKLOAD CHARACTERIZATION</span>
+            <span style="font-size:0.75rem; font-weight:700; color:var(--text-muted); text-transform:uppercase;">5 Distinct Execution Phases &bull; 25 Accesses Each</span>
+          </div>
+          <table class="matrix-table">
+            <thead>
+              <tr>
+                <th>PHASE</th>
+                <th>STEPS</th>
+                <th>WORKLOAD BEHAVIOR</th>
+                <th>DETECTED PATTERN</th>
+                <th>DISPATCHED POLICY</th>
+                <th>ENGINE RATIONALE</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td>Phase 1</td><td>0 &ndash; 24</td><td>Bursty Working Set (88% reuse)</td><td>HIGH REUSE LOCALITY</td><td><strong>LRU</strong></td><td>Protects active recency set</td></tr>
+              <tr><td>Phase 2</td><td>25 &ndash; 49</td><td>Sequential Table Scan (monotonic)</td><td>SEQUENTIAL SCAN</td><td><strong>FIFO</strong></td><td>Prevents one-off cache pollution</td></tr>
+              <tr><td>Phase 3</td><td>50 &ndash; 74</td><td>Loop Size P=5 &gt; RAM Frames 4</td><td>CYCLIC LOOP (P &gt; RAM)</td><td><strong>FIFO / Clock</strong></td><td>Overcomes LRU 0% hit pathology</td></tr>
+              <tr><td>Phase 4</td><td>75 &ndash; 99</td><td>Uncorrelated Memory References</td><td>RANDOM ACCESS</td><td><strong>Clock</strong></td><td>O(1) amortized second chance pointer</td></tr>
+              <tr><td>Phase 5</td><td>100 &ndash; 124</td><td>Interactive Reuse Set (94% reuse)</td><td>HIGH REUSE LOCALITY</td><td><strong>LRU</strong></td><td>Re-locks working set for peak hit rate</td></tr>
+            </tbody>
+          </table>`;
+      }
     }
   }
 
